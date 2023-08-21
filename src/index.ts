@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-21 17:23:15
+ * @LastEditTime : 2023-08-21 18:14:27
  * @Description  : 
  */
 import {
@@ -50,8 +50,8 @@ export default class PluginSample extends Plugin {
         this.addDock({
             config: {
                 position: "RightBottom",
-                size: { width: 280, height: 0 },
-                icon: "iconSaving",
+                size: { width: 320, height: 0 },
+                icon: "iconSettings",
                 title: "Timer Logger",
             },
             data: {

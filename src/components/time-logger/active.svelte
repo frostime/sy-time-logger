@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-21 17:26:40
+ LastEditTime : 2023-08-21 18:17:04
  Description  : 单个活动项目
 -->
 <script lang="ts">
@@ -11,7 +11,9 @@
 
     export let size: { item: number; emoji: number; hint: number };
     export let emoji: { type: string; code: string };
-    export let hint: string = "说明";
+    export let hint: string = null;
+
+    let height = hint ? size.emoji + size.hint + 6 : size.emoji;
 
     let subActiveCnt = 0;
     let styleDisplayCnt = subActiveCnt == 0 ? "display: none;" : "";
@@ -19,17 +21,20 @@
 
 <div
     class="active b3-tooltips b3-tooltips__s"
-    aria-label="{hint}"
-    style="width: {size.item}px; height: {size.emoji + size.hint + 6}px;"
+    aria-label={hint}
+    style="width: {size.item}px; height: {height}px;"
 >
-    <div class="sub-actives" style="{styleDisplayCnt}">{subActiveCnt}</div>
+    <div class="sub-actives" style={styleDisplayCnt}>{subActiveCnt}</div>
     <Emoji type={emoji.type} code={emoji.code} width="{size.emoji}px" />
-    <div
-        class="hint"
-        style="font-size: {size.hint}px; width: {size.item}px; line-height: {size.hint +6}px"
-    >
-        {hint}
-    </div>
+    {#if hint}
+        <div
+            class="hint"
+            style="font-size: {size.hint}px; width: {size.item}px; line-height: {size.hint +
+                6}px"
+        >
+            {hint}
+        </div>
+    {/if}
 </div>
 
 <style lang="scss">
@@ -44,7 +49,7 @@
         cursor: pointer;
 
         position: relative;
-        
+
         div.sub-actives {
             right: 0px;
             top: 0px;

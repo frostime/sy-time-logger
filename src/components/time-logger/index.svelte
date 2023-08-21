@@ -3,11 +3,12 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-21 17:22:19
+ LastEditTime : 2023-08-21 17:38:13
  Description  : 
 -->
 <script lang="ts">
     import AllActives from './all-actives.svelte';
+    import RunningAction from './running-action.svelte';
 
     const doNothing = () => {};
 </script>
@@ -30,5 +31,10 @@
             <svg class=""><use xlink:href="#iconSetting" /></svg>
         </span>
     </div>
+
+    <section id="running-action-list">
+        <RunningAction />
+    </section>
+
     <AllActives />
 </div>
