@@ -3,15 +3,17 @@
     import Active from "./active.svelte";
     import { TimeLogSession, sessionHub } from "@/actives";
 
+    export let active: IActive;
+
     //@ts-ignore
-    const emoji = window.siyuan.emojis;
-    let active: IActive = {
-        emoji: {
-            type: "custom",
-            code: emoji[0].items[0].unicode,
-        },
-        title: "大声阅读论文",
-    };
+    // const emoji = window.siyuan.emojis;
+    // let active: IActive = {
+    //     emoji: {
+    //         type: "custom",
+    //         code: emoji[0].items[0].unicode,
+    //     },
+    //     title: "大声阅读论文",
+    // };
 
     let session: TimeLogSession = sessionHub.new(active);
     let timer: string = "00:00:00";
@@ -46,8 +48,9 @@
 <div class="running-active">
     <div>
         <Active
-            size={{ item: 40, emoji: 30, hint: 12 }}
-            emoji={active.emoji}
+            size={{ item: 40, emoji: 30, title: 12, emojiFontsize: 25 }}
+            active={active}
+            showTitle={false}
         />
     </div>
     <div class="running">
@@ -62,7 +65,7 @@
         {#if status == "running"}
             <button class="btn-pause" on:click={pause}>暂停</button>
         {:else if status == "pause"}
-            <button class="btn-start" on:click={start}>继续</button>
+            <button class="btn-start" on:click={start}>开始</button>
         {/if}
         <button class="btn-stop" on:click={stop}>结束</button>
     </div>

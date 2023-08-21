@@ -3,20 +3,19 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:42:06
  FilePath     : /src/components/libs/emoji.svelte
- LastEditTime : 2023-08-21 16:29:21
+ LastEditTime : 2023-08-21 20:14:34
  Description  : 
 -->
 <script lang="ts">
     export let type: string;
     export let code: string;
     export let width: string | number = null;
+    export let unicodeFontSize: number = 30;
     let styleWidth: string = "";
-    let unicodeFontSize: number = 30;
     $: {
         if (width) {
             if (typeof width === "number") {
                 styleWidth = `width: ${width}px; height: ${width}px;`;
-                unicodeFontSize = width * 0.75;
             } else {
                 styleWidth = `width: ${width}; height: ${width};`;
             }

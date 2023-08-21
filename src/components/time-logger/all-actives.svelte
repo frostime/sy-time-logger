@@ -1,11 +1,14 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte";
     import Active from "./active.svelte";
+
+    const dispatch = createEventDispatcher();
 
     const ItemWidth: number = 60;
     const Size = {
         item: ItemWidth,
         emoji: 40,
-        hint: 12
+        title: 12
     };
 
     const onResize =  (event: UIEvent) => {
@@ -17,48 +20,48 @@
 
     //@ts-ignore
     const emoji = window.siyuan.emojis;
-    let actives = [
+    let actives: IActive[] = [
         {
             emoji: {
                 type: "custom",
                 code: emoji[0].items[0].unicode,
             },
-            hint: "说明"
+            title: "说明"
         },
         {
             emoji: {
                 type: "custom",
                 code: emoji[0].items[1].unicode,
             },
-            hint: "说明"
+            title: "说明"
         },
         {
             emoji: {
-                type: "custom",
-                code: emoji[0].items[2].unicode,
+                type: "unicode",
+                code: emoji[4].items[3].unicode,
             },
-            hint: "Academic"
+            title: "Academic"
         },
         {
             emoji: {
                 type: "unicode",
                 code: emoji[1].items[0].unicode
             },
-            hint: "Take notes"
+            title: "Take notes"
         },
         {
             emoji: {
                 type: "unicode",
                 code: emoji[2].items[10].unicode
             },
-            hint: "大声说明出来啊！"
+            title: "大声说明出来啊！"
         },
         {
             emoji: {
                 type: "unicode",
                 code: emoji[4].items[20].unicode
             },
-            hint: "阅读论文"
+            title: "阅读论文"
         }
     ]
 
@@ -68,7 +71,11 @@
     on:resize={onResize}
 >
     {#each actives as active}
-        <Active size={Size} emoji={active.emoji} hint={active.hint}/>
+        <Active size={Size} active={active} on:click={
+            () => {
+                dispatch("click", active);
+            }
+        }/>
     {/each}
 </section>
 

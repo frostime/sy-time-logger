@@ -3,37 +3,48 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-21 19:27:17
+ LastEditTime : 2023-08-21 20:18:13
  Description  : 单个活动项目
 -->
 <script lang="ts">
+    import { createEventDispatcher } from "svelte";
     import Emoji from "@/components/libs/emoji.svelte";
 
-    export let size: { item: number; emoji: number; hint: number };
-    export let emoji: { type: string; code: string };
-    export let hint: string = null;
-    // export let active: IActive;
+    export let size: { item: number; emoji: number; title: number; emojiFontsize?: number };
+    export let active: IActive;
+    export let showTitle: boolean = true;
+    // let emoji: { type: string; code: string };
+    // let title: string;
 
-    let height = hint ? size.emoji + size.hint + 6 : size.emoji;
+    let height = active.title ? size.emoji + size.title + 6 : size.emoji;
 
     let subActiveCnt = 0;
     let styleDisplayCnt = subActiveCnt == 0 ? "display: none;" : "";
+
+
+    const dispatch = createEventDispatcher();
+    const onclick = () => {
+        dispatch("click");
+    };
+
 </script>
 
 <div
     class="active b3-tooltips b3-tooltips__s"
-    aria-label={hint}
+    aria-label={active.title}
     style="width: {size.item}px; height: {height}px;"
+    on:click={onclick}
+    on:keypress={() => {}}
 >
     <div class="sub-actives" style={styleDisplayCnt}>{subActiveCnt}</div>
-    <Emoji type={emoji.type} code={emoji.code} width="{size.emoji}px" />
-    {#if hint}
+    <Emoji type={active.emoji.type} code={active.emoji.code} width="{size.emoji}px" unicodeFontSize="{size?.emojiFontsize}"/>
+    {#if showTitle}
         <div
             class="hint"
-            style="font-size: {size.hint}px; width: {size.item}px; line-height: {size.hint +
+            style="font-size: {size.title}px; width: {size.item}px; line-height: {size.title +
                 6}px"
         >
-            {hint}
+            {active.title}
         </div>
     {/if}
 </div>

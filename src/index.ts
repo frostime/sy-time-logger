@@ -14,6 +14,8 @@ import {
 } from "siyuan";
 import "@/index.scss";
 
+import { setEventBus } from "./utils";
+
 import TimeLogger from "./components/time-logger/index.svelte";
 
 
@@ -25,6 +27,8 @@ export default class PluginSample extends Plugin {
 
         const frontEnd = getFrontend();
         this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
+
+        setEventBus(this.eventBus);
 
         const topBarElement = this.addTopBar({
             icon: "iconFace",

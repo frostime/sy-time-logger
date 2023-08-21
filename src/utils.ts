@@ -1,3 +1,5 @@
+import type { IEventBus } from "./types/index.d.ts";
+
 export function time2str(time: number) {
     // console.log(time);
     time = Math.round(time);
@@ -9,4 +11,9 @@ export function time2str(time: number) {
     timeArr.push(minute.toString().padStart(2, "0"));
     timeArr.push(second.toString().padStart(2, "0"));
     return timeArr.join(":");
+}
+
+export let eventBus: IEventBus;
+export let setEventBus = (bus: IEventBus) => {
+    eventBus = bus;
 }

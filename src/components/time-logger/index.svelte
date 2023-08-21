@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-21 18:27:45
+ LastEditTime : 2023-08-21 20:08:18
  Description  : 
 -->
 <script lang="ts">
@@ -11,6 +11,13 @@
     import RunningAction from './running-action.svelte';
 
     const doNothing = () => {};
+    let runningActive: IActive[] = [];
+
+
+    const onclick = ({ detail }) => {
+        runningActive = [...runningActive, detail];
+    }
+
 </script>
 
 <div class="fn__flex-1">
@@ -33,8 +40,10 @@
     </div>
 
     <section id="running-action-list">
-        <RunningAction />
+        {#each runningActive as active}
+            <RunningAction active={active} />
+        {/each}
     </section>
 
-    <AllActives />
+    <AllActives on:click={onclick}/>
 </div>
