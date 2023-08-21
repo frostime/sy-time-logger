@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-20 21:57:53
+ * @LastEditTime : 2023-08-21 15:56:33
  * @Description  : 
  */
 import {
@@ -49,19 +49,19 @@ export default class PluginSample extends Plugin {
 
         this.addDock({
             config: {
-                position: "LeftBottom",
-                size: { width: 200, height: 0 },
+                position: "RightBottom",
+                size: { width: 280, height: 0 },
                 icon: "iconSaving",
-                title: "Custom Dock",
+                title: "Timer Logger",
             },
             data: {
-                text: "This is my custom dock"
+                text: "Timer Logger"
             },
             type: 'dock_tab',
             init() {
                 this.element.innerHTML = '<div id="TimeLogger"/>';
                 new TimeLogger({
-                    target: this.element.querySelector('#ShowResv')
+                    target: this.element.querySelector('#TimeLogger')
                 });
             },
             destroy() {

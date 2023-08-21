@@ -1,8 +1,11 @@
 <script lang="ts">
+    import Active from "./active.svelte";
+
+    const itemWidth: number = 50;
+
     const onResize =  (event: UIEvent) => {
         let container: HTMLDivElement = event.target as HTMLDivElement;
         var containerWidth = container.offsetWidth;
-        var itemWidth = 150; // 假设每个项目的宽度为200px
         var itemsPerRow = Math.floor(containerWidth / itemWidth);
         container.style.flexBasis = containerWidth / itemsPerRow + "px";
     }
@@ -11,12 +14,13 @@
 <section class="all-actives" id="all-actives"
     on:resize={onResize}
 >
-    <div class="active" />
-    <div class="active" />
-    <div class="active" />
-    <div class="active" />
-    <div class="active" />
-    <div class="active" />
+    {#each Array(10) as i}
+        <div class="active-item" data-index={i}
+            style="width: {itemWidth}px; height: {itemWidth}px;"
+        >
+            <Active />
+        </div>
+    {/each}
 </section>
 
 <style lang="scss">
@@ -25,9 +29,7 @@
         flex-wrap: wrap;
     }
 
-    .active {
-        flex-basis: 150px; /* 假设每个项目的宽度为200px */
-        height: 100px; /* 假设每个项目的高度为100px */
+    .active-item {
         background-color: #ccc;
         margin: 10px;
     }
