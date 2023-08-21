@@ -3,19 +3,36 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-21 20:08:18
+ LastEditTime : 2023-08-21 20:51:41
  Description  : 
 -->
 <script lang="ts">
+    import { onDestroy, onMount } from 'svelte';
     import AllActives from './all-actives.svelte';
     import RunningAction from './running-action.svelte';
+    import { TimeLogSession, sessionHub } from "@/actives";
+
+    import { eventBus } from "@/utils";
 
     const doNothing = () => {};
-    let runningActive: IActive[] = [];
+    let runningSession: TimeLogSession[] = [];
+
+    onMount(() => {
+        eventBus.on("on-session-stop", onstop);
+    });
+    onDestroy(() => {
+        eventBus.off("on-session-stop", onstop);
+    });
 
 
-    const onclick = ({ detail }) => {
-        runningActive = [...runningActive, detail];
+    const onclick = (e: CustomEvent<IActive>) => {
+        let session = sessionHub.new(e.detail);
+        runningSession = [...runningSession, session];
+    }
+
+    const onstop = (e: CustomEvent<TimeLogSession>) => {
+        let detail = e.detail;
+        runningSession = runningSession.filter((session) => session.runId != detail.runId);
     }
 
 </script>
@@ -40,8 +57,8 @@
     </div>
 
     <section id="running-action-list">
-        {#each runningActive as active}
-            <RunningAction active={active} />
+        {#each runningSession as session}
+            <RunningAction session={session} />
         {/each}
     </section>
 

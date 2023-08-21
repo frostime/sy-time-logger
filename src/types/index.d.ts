@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/types/index.d.ts
- * @LastEditTime : 2023-08-21 19:48:53
+ * @LastEditTime : 2023-08-21 20:48:02
  * @Description  : 
  */
 
@@ -88,7 +88,7 @@ interface Window {
     };
 }
 
-type TEvents = TEventBus;
+type TEvents = TEventBus | "on-session-stop";
 
 interface IEventBus {
     on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;

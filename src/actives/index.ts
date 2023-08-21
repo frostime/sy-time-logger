@@ -74,7 +74,7 @@ export class TimeLogSessionHub {
 
     new(active: IActive) {
         let session = new TimeLogSession(active);
-        let id = active.id + Date.now();
+        let id = `${active.id}#${Date.now()}`;
         this.sessions[id] = session;
         session.runId = id;
         return session;

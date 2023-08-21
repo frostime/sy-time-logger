@@ -1,9 +1,13 @@
 <script lang="ts">
     import { time2str } from "@/utils";
     import Active from "./active.svelte";
-    import { TimeLogSession, sessionHub } from "@/actives";
+    import { TimeLogSession } from "@/actives";
 
-    export let active: IActive;
+    import { eventBus } from "@/utils";
+
+    export let session: TimeLogSession;
+    let active: IActive;
+    $: active = session.active;
 
     //@ts-ignore
     // const emoji = window.siyuan.emojis;
@@ -15,13 +19,12 @@
     //     title: "大声阅读论文",
     // };
 
-    let session: TimeLogSession = sessionHub.new(active);
+    // let session: TimeLogSession = sessionHub.new(active);
     let timer: string = "00:00:00";
     const update = (elapsed) => {
         timer = time2str(elapsed / 1000);
     };
     session.addCallback(update);
-
 
     type Status = "running" | "pause" | "stop";
     let status: Status = "pause";
@@ -41,15 +44,15 @@
     const stop = () => {
         status = "stop";
         session.stop();
+        eventBus.emit("on-session-stop", session);
     };
-
 </script>
 
 <div class="running-active">
     <div>
         <Active
             size={{ item: 40, emoji: 30, title: 12, emojiFontsize: 25 }}
-            active={active}
+            {active}
             showTitle={false}
         />
     </div>
