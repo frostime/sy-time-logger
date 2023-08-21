@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-21 17:00:53
+ LastEditTime : 2023-08-21 17:18:14
  Description  : 单个活动项目
 -->
 <script lang="ts">
@@ -12,12 +12,16 @@
     export let size: { item: number; emoji: number; hint: number };
     export let emoji: { type: string; code: string };
     export let hint: string = "说明";
+
+    let subActiveCnt = 0;
+    let styleDisplayCnt = subActiveCnt == 0 ? "display: none;" : "";
 </script>
 
 <div
     class="active"
     style="width: {size.item}px; height: {size.emoji + size.hint + 6}px;"
 >
+    <div class="sub-actives" style="{styleDisplayCnt}">{subActiveCnt}</div>
     <Emoji type={emoji.type} code={emoji.code} width="{size.emoji}px" />
     <div
         class="hint"
@@ -36,6 +40,23 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+
+        position: relative;
+        
+        div.sub-actives {
+            right: 0px;
+            top: 0px;
+            position: absolute;
+            line-height: 16px;
+            padding: 0 4px;
+            color: var(--b3-theme-on-surface);
+            border-radius: var(--b3-border-radius);
+            font-size: 12px;
+            user-select: none;
+            height: 16px;
+            background-color: var(--b3-theme-surface);
+            z-index: 1;
+        }
     }
     div.hint {
         overflow: hidden;

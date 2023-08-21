@@ -11,7 +11,7 @@
     const onResize =  (event: UIEvent) => {
         let container: HTMLDivElement = event.target as HTMLDivElement;
         var containerWidth = container.offsetWidth;
-        var itemsPerRow = Math.floor(containerWidth / (ItemWidth + 20));
+        var itemsPerRow = Math.floor(containerWidth / (ItemWidth));
         container.style.flexBasis = containerWidth / itemsPerRow + "px";
     }
 
@@ -37,7 +37,7 @@
                 type: "custom",
                 code: emoji[0].items[2].unicode,
             },
-            hint: "说明"
+            hint: "Academic"
         },
         {
             emoji: {
