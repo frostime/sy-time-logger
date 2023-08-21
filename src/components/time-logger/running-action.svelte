@@ -1,20 +1,45 @@
 <script lang="ts">
+    import { time2str } from "@/utils";
     import Active from "./active.svelte";
+    import { TimeLogSession, sessionHub } from "@/actives";
 
-    let timer: string = "00:04:17";
     //@ts-ignore
     const emoji = window.siyuan.emojis;
-    let active = {
+    let active: IActive = {
         emoji: {
             type: "custom",
             code: emoji[0].items[0].unicode,
         },
-        hint: "大声阅读论文",
+        title: "大声阅读论文",
     };
 
-    type Status = "running" | "pause" | "stop";
-    let status: Status = "running";
+    let session: TimeLogSession = sessionHub.new(active);
+    let timer: string = "00:00:00";
+    const update = (elapsed) => {
+        timer = time2str(elapsed / 1000);
+    };
+    session.addCallback(update);
 
+
+    type Status = "running" | "pause" | "stop";
+    let status: Status = "pause";
+
+    const start = () => {
+        if (status == "stop") return;
+        status = "running";
+        session.start();
+    };
+
+    const pause = () => {
+        if (status == "stop") return;
+        status = "pause";
+        session.pause();
+    };
+
+    const stop = () => {
+        status = "stop";
+        session.stop();
+    };
 
 </script>
 
@@ -27,7 +52,7 @@
     </div>
     <div class="running">
         <div class="runnint-title">
-            {active.hint}
+            {active.title}
         </div>
         <div class="running-time">
             {timer}
@@ -35,11 +60,11 @@
     </div>
     <div class="action-button">
         {#if status == "running"}
-            <button class="btn-pause" on:click={() => {status = "pause"}}>暂停</button>
+            <button class="btn-pause" on:click={pause}>暂停</button>
         {:else if status == "pause"}
-            <button class="btn-start" on:click={() => {status = "running"}}>继续</button>
+            <button class="btn-start" on:click={start}>继续</button>
         {/if}
-        <button class="btn-stop">结束</button>
+        <button class="btn-stop" on:click={stop}>结束</button>
     </div>
 </div>
 
@@ -73,12 +98,6 @@
                 font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
             }
-        }
-
-        .fn__space {
-            width: 4px;
-            display: inline-block;
-            flex-shrink: 0;
         }
     }
 

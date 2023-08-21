@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-21 18:17:04
+ LastEditTime : 2023-08-21 19:27:17
  Description  : 单个活动项目
 -->
 <script lang="ts">
@@ -12,6 +12,7 @@
     export let size: { item: number; emoji: number; hint: number };
     export let emoji: { type: string; code: string };
     export let hint: string = null;
+    // export let active: IActive;
 
     let height = hint ? size.emoji + size.hint + 6 : size.emoji;
 
