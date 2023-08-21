@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-21 17:18:14
+ LastEditTime : 2023-08-21 17:26:40
  Description  : 单个活动项目
 -->
 <script lang="ts">
@@ -18,7 +18,8 @@
 </script>
 
 <div
-    class="active"
+    class="active b3-tooltips b3-tooltips__s"
+    aria-label="{hint}"
     style="width: {size.item}px; height: {size.emoji + size.hint + 6}px;"
 >
     <div class="sub-actives" style="{styleDisplayCnt}">{subActiveCnt}</div>
@@ -40,6 +41,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
 
         position: relative;
         

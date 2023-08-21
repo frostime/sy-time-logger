@@ -76,5 +76,7 @@
     #all-actives {
         display: flex;
         flex-wrap: wrap;
+        height: 100%;
+        margin-bottom: 20px;
     }
 </style>
