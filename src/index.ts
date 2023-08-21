@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-21 18:14:27
+ * @LastEditTime : 2023-08-21 20:55:27
  * @Description  : 
  */
 import {
@@ -14,14 +14,17 @@ import {
 } from "siyuan";
 import "@/index.scss";
 
-import { setEventBus } from "./utils";
+import { eventBus, setEventBus } from "./utils";
 
 import TimeLogger from "./components/time-logger/index.svelte";
+import { TimeLogSession } from "./actives";
 
 
 export default class PluginSample extends Plugin {
 
     isMobile: boolean;
+
+    DATA_TIME_LOGGER = "time-log.json";
 
     async onload() {
 
@@ -71,6 +74,11 @@ export default class PluginSample extends Plugin {
             destroy() {
                 // console.log("destroy dock:", DOCK_TYPE);
             }
+        });
+
+        eventBus.on("on-session-stop", (event: CustomEvent<TimeLogSession>) => {
+            let session = event.detail;
+            
         });
 
     }
