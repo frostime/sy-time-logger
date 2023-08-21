@@ -1,25 +1,74 @@
 <script lang="ts">
     import Active from "./active.svelte";
 
-    const itemWidth: number = 50;
+    const ItemWidth: number = 60;
+    const Size = {
+        item: ItemWidth,
+        emoji: 40,
+        hint: 12
+    };
 
     const onResize =  (event: UIEvent) => {
         let container: HTMLDivElement = event.target as HTMLDivElement;
         var containerWidth = container.offsetWidth;
-        var itemsPerRow = Math.floor(containerWidth / itemWidth);
+        var itemsPerRow = Math.floor(containerWidth / (ItemWidth + 20));
         container.style.flexBasis = containerWidth / itemsPerRow + "px";
     }
+
+    //@ts-ignore
+    const emoji = window.siyuan.emojis;
+    let actives = [
+        {
+            emoji: {
+                type: "custom",
+                code: emoji[0].items[0].unicode,
+            },
+            hint: "说明"
+        },
+        {
+            emoji: {
+                type: "custom",
+                code: emoji[0].items[1].unicode,
+            },
+            hint: "说明"
+        },
+        {
+            emoji: {
+                type: "custom",
+                code: emoji[0].items[2].unicode,
+            },
+            hint: "说明"
+        },
+        {
+            emoji: {
+                type: "unicode",
+                code: emoji[1].items[0].unicode
+            },
+            hint: "Take notes"
+        },
+        {
+            emoji: {
+                type: "unicode",
+                code: emoji[2].items[10].unicode
+            },
+            hint: "大声说明出来啊！"
+        },
+        {
+            emoji: {
+                type: "unicode",
+                code: emoji[4].items[20].unicode
+            },
+            hint: "阅读论文"
+        }
+    ]
+
 </script>
 
 <section class="all-actives" id="all-actives"
     on:resize={onResize}
 >
-    {#each Array(10) as i}
-        <div class="active-item" data-index={i}
-            style="width: {itemWidth}px; height: {itemWidth}px;"
-        >
-            <Active />
-        </div>
+    {#each actives as active}
+        <Active size={Size} emoji={active.emoji} hint={active.hint}/>
     {/each}
 </section>
 
@@ -27,10 +76,5 @@
     #all-actives {
         display: flex;
         flex-wrap: wrap;
-    }
-
-    .active-item {
-        background-color: #ccc;
-        margin: 10px;
     }
 </style>
