@@ -18,7 +18,7 @@
 
 </script>
 
-<div class="running-action">
+<div class="running-active">
     <div>
         <Active
             size={{ item: 40, emoji: 30, hint: 12 }}
@@ -26,7 +26,7 @@
         />
     </div>
     <div class="running">
-        <div class="running-active">
+        <div class="runnint-title">
             {active.hint}
         </div>
         <div class="running-time">
@@ -44,12 +44,15 @@
 </div>
 
 <style lang="scss">
-    div.running-action {
+    div.running-active {
         display: flex;
         gap: 15px;
 
         // border-top: 1px solid var(--b3-border-color);
         border-bottom: 2px dashed var(--b3-border-color);
+        margin-bottom: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
 
         align-items: center;
 
@@ -58,15 +61,15 @@
             flex-direction: column;
             flex: 1;
             gap: 4px;
-            .running-active {
+            .runnint-title {
                 flex: 0;
-                font-size: 12px;
+                font-size: 14px;
                 // font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
             }
             .running-time {
                 flex: 1;
-                font-size: 20px;
+                font-size: 24px;
                 font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
             }
@@ -80,6 +83,7 @@
     }
 
     div.action-button {
+        margin-right: 5px;
         .btn-start {
             background-color: rgb(62, 189, 124);
             color: white;

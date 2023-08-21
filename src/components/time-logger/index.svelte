@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-21 17:38:13
+ LastEditTime : 2023-08-21 18:27:45
  Description  : 
 -->
 <script lang="ts">
