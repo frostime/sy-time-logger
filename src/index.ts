@@ -94,6 +94,13 @@ export default class PluginSample extends Plugin {
             this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
         });
 
+        const del = (event: CustomEvent<TimeLogSession>) => {
+            let session = event.detail;
+            sessionHub.del(session);
+        }
+        eventBus.on("on-session-stop", del);
+        eventBus.on("on-session-del", del);
+
     }
     onunload() {
         this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);

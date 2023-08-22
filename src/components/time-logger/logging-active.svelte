@@ -4,6 +4,7 @@
     import { TimeLogSession } from "@/actives";
 
     import { eventBus } from "@/utils";
+    import { onDestroy, onMount } from "svelte";
 
     export let session: TimeLogSession;
     let active: IActive;
@@ -20,6 +21,15 @@
     // };
 
     // let session: TimeLogSession = sessionHub.new(active);
+
+    onMount(() => {
+        console.log('Mount session', session);
+    });
+
+    onDestroy(() => {
+        console.log('Destroy session', session);
+    });
+
     let timer: string = time2str(session.elapsed / 1000);
     const update = (elapsed) => {
         timer = time2str(elapsed / 1000);
@@ -48,7 +58,7 @@
     };
 
     const del = (e: MouseEvent) => {
-        session.stop();
+        session.del();
         eventBus.emit("on-session-del", session);
         e.stopPropagation();
     };

@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-22 16:28:39
+ LastEditTime : 2023-08-22 17:32:48
  Description  : 
 -->
 <script lang="ts">
@@ -18,9 +18,8 @@
     let runningSession: TimeLogSession[] = [];
 
     onMount(() => {
-        eventBus.on("on-session-stop", onstop);
-        eventBus.on("on-session-del", onstop);
-        console.log("On Mount");
+        eventBus.on("on-session-stop", removeActive);
+        eventBus.on("on-session-del", removeActive);
 
         let sessions = [];
         for (let id in sessionHub.sessions) {
@@ -30,9 +29,8 @@
 
     });
     onDestroy(() => {
-        eventBus.off("on-session-stop", onstop);
-        eventBus.off("on-session-del", onstop);
-        console.log("On Destroy");
+        eventBus.off("on-session-stop", removeActive);
+        eventBus.off("on-session-del", removeActive);
     });
 
 
@@ -41,7 +39,7 @@
         runningSession = [...runningSession, session];
     }
 
-    const onstop = (e: CustomEvent<TimeLogSession>) => {
+    const removeActive = (e: CustomEvent<TimeLogSession>) => {
         let detail = e.detail;
         runningSession = runningSession.filter((session) => session.runId != detail.runId);
     }
@@ -68,7 +66,7 @@
     </div>
 
     <section id="running-action-list">
-        {#each runningSession as session}
+        {#each runningSession as session (session.runId)}
             <LoggingActive session={session} />
         {/each}
     </section>

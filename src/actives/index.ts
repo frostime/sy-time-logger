@@ -1,3 +1,4 @@
+import { eventBus } from "@/utils";
 
 export class TimeLogSession implements ITimeLog {
     active: IActive;
@@ -59,7 +60,7 @@ export class TimeLogSession implements ITimeLog {
             let elapsed = Date.now() - this.currentInterval.beg;
             this.currentInterval.elapsed = elapsed;
             this.runningElapsed = this.elapsed + elapsed;
-            console.log(this.runningElapsed);
+            // console.log(this.runningElapsed);
             this.callbacks.forEach(callback => {
                 callback(this.runningElapsed);
             });
@@ -79,8 +80,19 @@ export class TimeLogSession implements ITimeLog {
     }
 
     stop() {
+        if (!this.currentInterval) return;
         this.pause();
         this.end = Date.now();
+        this.callbacks = [];
+    }
+
+    del() {
+        if (!this.currentInterval) return;
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+        this.currentInterval = null;
         this.callbacks = [];
     }
 }
@@ -102,8 +114,8 @@ export class TimeLogSessionHub {
 
     del(session: TimeLogSession | string) {
         let id = typeof session === "string" ? session : session.runId;
-        this.sessions[id].stop();
         delete this.sessions[id];
+        console.log("Delete session", session);
     }
 
     pause() {
