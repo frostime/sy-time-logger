@@ -1,3 +1,11 @@
+<!--
+ Copyright (c) 2023 by Yp Z (frostime). All Rights Reserved.
+ Author       : Yp Z
+ Date         : 2023-08-22 14:45:10
+ FilePath     : /src/components/time-logger/all-actives.svelte
+ LastEditTime : 2023-08-22 15:52:00
+ Description  : 
+-->
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import Active from "./active.svelte";
@@ -23,15 +31,15 @@
     let actives: IActive[] = [
         {
             emoji: {
-                type: "custom",
-                code: emoji[0].items[0].unicode,
+                type: "unicode",
+                code: emoji[1].items[0].unicode,
             },
             title: "说明"
         },
         {
             emoji: {
-                type: "custom",
-                code: emoji[0].items[1].unicode,
+                type: "unicode",
+                code: emoji[1].items[1].unicode,
             },
             title: "说明"
         },

@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-22 11:44:56
+ * @LastEditTime : 2023-08-22 16:10:28
  * @Description  : 
  */
 import {
@@ -14,7 +14,7 @@ import {
 } from "siyuan";
 import "@/index.scss";
 
-import { eventBus, setEventBus } from "./utils";
+import { eventBus, setEventBus, time2str } from "./utils";
 
 import TimeLogger from "./components/time-logger/index.svelte";
 import { TimeLogSession } from "./actives";
@@ -82,6 +82,10 @@ export default class PluginSample extends Plugin {
         eventBus.on("on-session-stop", (event: CustomEvent<TimeLogSession>) => {
             let session = event.detail;
             let timelog: ITimeLog = session.export();
+            if (timelog.elapsed == 0) {
+                return;
+            }
+            showMessage(`活动结束, 共 ${time2str(timelog.elapsed / 1000)}`);
             this.data[DATA_TIME_LOGGER].push(timelog);
             this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
         });

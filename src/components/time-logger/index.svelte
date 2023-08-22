@@ -19,9 +19,11 @@
 
     onMount(() => {
         eventBus.on("on-session-stop", onstop);
+        eventBus.on("on-session-del", onstop);
     });
     onDestroy(() => {
         eventBus.off("on-session-stop", onstop);
+        eventBus.off("on-session-del", onstop);
     });
 
 

@@ -88,7 +88,9 @@ interface Window {
     };
 }
 
-type TEvents = TEventBus | "on-session-stop";
+type TEvents = TEventBus
+                | "on-session-stop" // log session 正常结束
+                | "on-session-del"; // log session 被关闭并删除
 
 interface IEventBus {
     on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;

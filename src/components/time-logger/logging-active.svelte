@@ -46,6 +46,13 @@
         session.stop();
         eventBus.emit("on-session-stop", session);
     };
+
+    const del = (e: MouseEvent) => {
+        session.stop();
+        eventBus.emit("on-session-del", session);
+        e.stopPropagation();
+    };
+
 </script>
 
 <div class="running-active">
@@ -72,6 +79,9 @@
         {/if}
         <button class="btn-stop" on:click={stop}>结束</button>
     </div>
+    <div class="close-action" on:click={del} on:keypress={() => {}}>
+        <svg><use xlink:href="#iconClose"></use></svg>
+    </div>
 </div>
 
 <style lang="scss">
@@ -86,6 +96,8 @@
         padding-bottom: 10px;
 
         align-items: center;
+
+        position: relative;
 
         .running {
             display: flex;
@@ -103,6 +115,22 @@
                 font-size: 24px;
                 font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
+            }
+        }
+
+        div.close-action {
+            position: absolute;
+            top: 0px;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            >svg {
+                width: 100%;
+                height: 100%;
+                color: var(--b3-theme-on-surface);
+                &:hover {
+                    color: var(--b3-theme-primary);
+                }
             }
         }
     }
