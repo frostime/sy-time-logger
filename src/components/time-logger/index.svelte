@@ -20,10 +20,12 @@
     onMount(() => {
         eventBus.on("on-session-stop", onstop);
         eventBus.on("on-session-del", onstop);
+        console.log("On Mount");
     });
     onDestroy(() => {
         eventBus.off("on-session-stop", onstop);
         eventBus.off("on-session-del", onstop);
+        console.log("On Destroy");
     });
 
 

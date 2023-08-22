@@ -56,7 +56,7 @@ export class TimeLogSession implements ITimeLog {
             let elapsed = Date.now() - this.currentInterval.beg;
             this.currentInterval.elapsed = elapsed;
             this.runningElapsed = this.elapsed + elapsed;
-            // console.log(this.runningElapsed);
+            console.log(this.runningElapsed);
             this.callbacks.forEach(callback => {
                 callback(this.runningElapsed);
             });
@@ -101,6 +101,12 @@ export class TimeLogSessionHub {
         let id = typeof session === "string" ? session : session.runId;
         this.sessions[id].stop();
         delete this.sessions[id];
+    }
+
+    pause() {
+        for (let id in this.sessions) {
+            this.sessions[id].pause();
+        }
     }
 }
 
