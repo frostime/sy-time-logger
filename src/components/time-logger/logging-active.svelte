@@ -6,6 +6,8 @@
     import { eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
+    import { inputDialog } from "@/utils";
+
     export let session: TimeLogSession;
     let active: IActive;
     $: active = session.active;
@@ -23,11 +25,11 @@
     // let session: TimeLogSession = sessionHub.new(active);
 
     onMount(() => {
-        console.log('Mount session', session);
+        console.log("Mount session", session);
     });
 
     onDestroy(() => {
-        console.log('Destroy session', session);
+        console.log("Destroy session", session);
     });
 
     let timer: string = time2str(session.elapsed / 1000);
@@ -62,7 +64,6 @@
         eventBus.emit("on-session-del", session);
         e.stopPropagation();
     };
-
 </script>
 
 <div class="running-active">
@@ -73,13 +74,25 @@
             showTitle={false}
         />
     </div>
-    <div class="running">
-        <div class="runnint-title">
+    <div class="running"
+        on:keypress={() => {}}
+        on:click={() => {
+            inputDialog("备注", session.memo, "输入备注").then((memo) => {
+                session.memo = memo;
+            });
+        }}
+    >
+        <div class="running-title">
             {active.title}
         </div>
         <div class="running-time">
             {timer}
         </div>
+        {#if session.memo != ""}
+            <div class="running-memo">
+                {session.memo}
+            </div>
+        {/if}
     </div>
     <div class="action-button">
         {#if status == "running"}
@@ -90,7 +103,7 @@
         <button class="btn-stop" on:click={stop}>结束</button>
     </div>
     <div class="close-action" on:click={del} on:keypress={() => {}}>
-        <svg><use xlink:href="#iconClose"></use></svg>
+        <svg><use xlink:href="#iconClose" /></svg>
     </div>
 </div>
 
@@ -114,16 +127,25 @@
             flex-direction: column;
             flex: 1;
             gap: 4px;
-            .runnint-title {
+            .running-title {
                 flex: 0;
                 font-size: 14px;
-                // font-weight: bold;
+                font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
             }
             .running-time {
                 flex: 1;
                 font-size: 24px;
                 font-weight: bold;
+                color: var(--b3-protyle-inline-em-color);
+            }
+
+            .running-memo {
+                flex: 0;
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+                // font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
             }
         }
@@ -134,7 +156,7 @@
             right: 10px;
             width: 10px;
             height: 10px;
-            >svg {
+            > svg {
                 width: 100%;
                 height: 100%;
                 color: var(--b3-theme-on-surface);
