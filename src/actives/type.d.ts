@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-21 18:58:55
  * @FilePath     : /src/actives/type.d.ts
- * @LastEditTime : 2023-08-21 19:05:07
+ * @LastEditTime : 2023-08-22 11:49:33
  * @Description  : 
  */
 interface IActive {
@@ -20,7 +20,7 @@ interface IActive {
 type TTimestamp = number;
 
 interface IInterval {
-    start: TTimestamp;
+    beg: TTimestamp;
     end: TTimestamp;
     elapsed: number;
 }
@@ -28,7 +28,9 @@ interface IInterval {
 
 interface ITimeLog {
     active: IActive;
+    beg: TTimestamp;  // 开始时间
+    end: TTimestamp;  // 结束时间
+    elapsed: number;  // 有效的记录, 不算暂停时间, 所以可能会小于 end - beg
     procedure: IInterval[];
-    elapsed: number;
     memo: string;
 }

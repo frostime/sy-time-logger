@@ -32,7 +32,7 @@
     const start = () => {
         if (status == "stop") return;
         status = "running";
-        session.start();
+        session.beg();
     };
 
     const pause = () => {

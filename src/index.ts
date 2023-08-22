@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-21 20:55:27
+ * @LastEditTime : 2023-08-22 11:44:56
  * @Description  : 
  */
 import {
@@ -19,12 +19,11 @@ import { eventBus, setEventBus } from "./utils";
 import TimeLogger from "./components/time-logger/index.svelte";
 import { TimeLogSession } from "./actives";
 
+const DATA_TIME_LOGGER = "time-log.json";
 
 export default class PluginSample extends Plugin {
 
     isMobile: boolean;
-
-    DATA_TIME_LOGGER = "time-log.json";
 
     async onload() {
 
@@ -76,16 +75,20 @@ export default class PluginSample extends Plugin {
             }
         });
 
+        // set default storage
+        let data_time_logger = await this.loadData(DATA_TIME_LOGGER);
+        this.data[DATA_TIME_LOGGER] = data_time_logger || [];
+
         eventBus.on("on-session-stop", (event: CustomEvent<TimeLogSession>) => {
             let session = event.detail;
-            
+            let timelog: ITimeLog = session.export();
+            this.data[DATA_TIME_LOGGER].push(timelog);
+            this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
         });
 
     }
     onunload() {
-        console.log(this.i18n.byePlugin);
-        showMessage("Goodbye SiYuan Plugin");
-        console.log("onunload");
+        this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
     }
 
     private addMenu(rect?: DOMRect) {
