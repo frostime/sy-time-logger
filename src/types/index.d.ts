@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/types/index.d.ts
- * @LastEditTime : 2023-08-21 20:48:02
+ * @LastEditTime : 2023-08-22 17:56:33
  * @Description  : 
  */
 
@@ -90,7 +90,8 @@ interface Window {
 
 type TEvents = TEventBus
                 | "on-session-stop" // log session 正常结束
-                | "on-session-del"; // log session 被关闭并删除
+                | "on-session-del" // log session 被关闭并删除
+                | "open-settings";
 
 interface IEventBus {
     on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;

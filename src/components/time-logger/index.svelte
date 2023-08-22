@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-22 17:32:48
+ LastEditTime : 2023-08-22 17:55:56
  Description  : 
 -->
 <script lang="ts">
@@ -55,13 +55,14 @@
         <span class="fn__flex-1" />
         <span class="fn__space" />
         <span
-            on:click={() => {}}
+            on:click={() => {
+                eventBus.emit("open-settings");
+            }}
             on:keydown={doNothing}
-            data-type="setting"
             class="block__icon b3-tooltips b3-tooltips__sw"
             aria-label="设置"
         >
-            <svg class=""><use xlink:href="#iconSetting" /></svg>
+            <svg class=""><use xlink:href="#iconSettings" /></svg>
         </span>
     </div>
 

@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-22 16:22:21
+ * @LastEditTime : 2023-08-22 17:56:49
  * @Description  : 
  */
 import {
@@ -100,10 +100,17 @@ export default class PluginSample extends Plugin {
         }
         eventBus.on("on-session-stop", del);
         eventBus.on("on-session-del", del);
+        eventBus.on("open-settings", () => {
+            this.openSetting();
+        });
 
     }
     onunload() {
         this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
+    }
+
+    openSetting(): void {
+        
     }
 
     private addMenu(rect?: DOMRect) {
