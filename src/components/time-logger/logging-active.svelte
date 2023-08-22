@@ -4,6 +4,7 @@
     import { TimeLogSession } from "@/actives";
 
     import { eventBus } from "@/utils";
+    import { onDestroy, onMount } from "svelte";
 
     export let session: TimeLogSession;
     let active: IActive;
@@ -20,14 +21,23 @@
     // };
 
     // let session: TimeLogSession = sessionHub.new(active);
-    let timer: string = "00:00:00";
+
+    onMount(() => {
+        console.log('Mount session', session);
+    });
+
+    onDestroy(() => {
+        console.log('Destroy session', session);
+    });
+
+    let timer: string = time2str(session.elapsed / 1000);
     const update = (elapsed) => {
         timer = time2str(elapsed / 1000);
     };
     session.addCallback(update);
 
     type Status = "running" | "pause" | "stop";
-    let status: Status = "pause";
+    let status: Status = session.status;
 
     const start = () => {
         if (status == "stop") return;
@@ -46,6 +56,13 @@
         session.stop();
         eventBus.emit("on-session-stop", session);
     };
+
+    const del = (e: MouseEvent) => {
+        session.del();
+        eventBus.emit("on-session-del", session);
+        e.stopPropagation();
+    };
+
 </script>
 
 <div class="running-active">
@@ -72,6 +89,9 @@
         {/if}
         <button class="btn-stop" on:click={stop}>结束</button>
     </div>
+    <div class="close-action" on:click={del} on:keypress={() => {}}>
+        <svg><use xlink:href="#iconClose"></use></svg>
+    </div>
 </div>
 
 <style lang="scss">
@@ -86,6 +106,8 @@
         padding-bottom: 10px;
 
         align-items: center;
+
+        position: relative;
 
         .running {
             display: flex;
@@ -103,6 +125,22 @@
                 font-size: 24px;
                 font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
+            }
+        }
+
+        div.close-action {
+            position: absolute;
+            top: 0px;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            >svg {
+                width: 100%;
+                height: 100%;
+                color: var(--b3-theme-on-surface);
+                &:hover {
+                    color: var(--b3-theme-primary);
+                }
             }
         }
     }

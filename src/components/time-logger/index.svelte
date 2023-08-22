@@ -3,13 +3,13 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-21 20:51:41
+ LastEditTime : 2023-08-22 17:32:48
  Description  : 
 -->
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
     import AllActives from './all-actives.svelte';
-    import RunningAction from './running-action.svelte';
+    import LoggingActive from './logging-active.svelte';
     import { TimeLogSession, sessionHub } from "@/actives";
 
     import { eventBus } from "@/utils";
@@ -18,10 +18,19 @@
     let runningSession: TimeLogSession[] = [];
 
     onMount(() => {
-        eventBus.on("on-session-stop", onstop);
+        eventBus.on("on-session-stop", removeActive);
+        eventBus.on("on-session-del", removeActive);
+
+        let sessions = [];
+        for (let id in sessionHub.sessions) {
+            sessions.push(sessionHub.sessions[id]);
+        }
+        runningSession = sessions;
+
     });
     onDestroy(() => {
-        eventBus.off("on-session-stop", onstop);
+        eventBus.off("on-session-stop", removeActive);
+        eventBus.off("on-session-del", removeActive);
     });
 
 
@@ -30,7 +39,7 @@
         runningSession = [...runningSession, session];
     }
 
-    const onstop = (e: CustomEvent<TimeLogSession>) => {
+    const removeActive = (e: CustomEvent<TimeLogSession>) => {
         let detail = e.detail;
         runningSession = runningSession.filter((session) => session.runId != detail.runId);
     }
@@ -57,8 +66,8 @@
     </div>
 
     <section id="running-action-list">
-        {#each runningSession as session}
-            <RunningAction session={session} />
+        {#each runningSession as session (session.runId)}
+            <LoggingActive session={session} />
         {/each}
     </section>
 

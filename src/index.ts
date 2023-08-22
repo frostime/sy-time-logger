@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-22 11:44:56
+ * @LastEditTime : 2023-08-22 16:22:21
  * @Description  : 
  */
 import {
@@ -14,10 +14,10 @@ import {
 } from "siyuan";
 import "@/index.scss";
 
-import { eventBus, setEventBus } from "./utils";
+import { eventBus, setEventBus, time2str } from "./utils";
 
 import TimeLogger from "./components/time-logger/index.svelte";
-import { TimeLogSession } from "./actives";
+import { TimeLogSession, sessionHub } from "./actives";
 
 const DATA_TIME_LOGGER = "time-log.json";
 
@@ -61,17 +61,21 @@ export default class PluginSample extends Plugin {
                 title: "Timer Logger",
             },
             data: {
-                text: "Timer Logger"
+                text: "Timer Logger",
+                timelogger: null as TimeLogger,
             },
             type: 'dock_tab',
             init() {
                 this.element.innerHTML = '<div id="TimeLogger"/>';
-                new TimeLogger({
+                this.data.timelogger = new TimeLogger({
                     target: this.element.querySelector('#TimeLogger')
                 });
             },
             destroy() {
                 // console.log("destroy dock:", DOCK_TYPE);
+                this.data.timelogger.$destroy();
+                this.data.timelogger = null;
+                sessionHub.pause();
             }
         });
 
@@ -82,9 +86,20 @@ export default class PluginSample extends Plugin {
         eventBus.on("on-session-stop", (event: CustomEvent<TimeLogSession>) => {
             let session = event.detail;
             let timelog: ITimeLog = session.export();
+            if (timelog.elapsed == 0) {
+                return;
+            }
+            showMessage(`活动结束, 共 ${time2str(timelog.elapsed / 1000)}`);
             this.data[DATA_TIME_LOGGER].push(timelog);
             this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
         });
+
+        const del = (event: CustomEvent<TimeLogSession>) => {
+            let session = event.detail;
+            sessionHub.del(session);
+        }
+        eventBus.on("on-session-stop", del);
+        eventBus.on("on-session-del", del);
 
     }
     onunload() {
