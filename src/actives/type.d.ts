@@ -13,8 +13,6 @@ interface IActive {
         code: string;
     };
     title: string;
-    parent?: IActive;
-    children?: IActive[];
 }
 
 type TTimestamp = number;

@@ -1,5 +1,45 @@
 import { eventBus } from "@/utils";
 
+class Active implements IActive {
+
+    id: string;
+    emoji: {
+        type: string;
+        code: string;
+    };
+    title: string;
+
+    parent?: Active;
+    children?: Active[];
+
+    constructor(data: IActive) {
+        this.id = data.id ?? Date.now().toString(16);
+        this.emoji = data.emoji;
+        this.title = data.title;
+        this.parent = null;
+        this.children = [];
+    }
+
+    addChild(active: Active) {
+        this.children.push(active);
+        active.parent = this;
+    }
+}
+
+export class ActiveHub {
+    rootActives: Active[];
+
+    constructor() {
+        this.rootActives = [];
+    }
+
+    add(active: IActive | Active) {
+        let item = active instanceof Active ? active : new Active(active);
+        this.rootActives.push(item);
+    }
+}
+
+
 export class TimeLogSession implements ITimeLog {
     active: IActive;
     beg: TTimestamp;
@@ -98,7 +138,7 @@ export class TimeLogSession implements ITimeLog {
 }
 
 export class TimeLogSessionHub {
-    sessions: { [key: string]: TimeLogSession};
+    sessions: { [key: string]: TimeLogSession };
 
     constructor() {
         this.sessions = {};
