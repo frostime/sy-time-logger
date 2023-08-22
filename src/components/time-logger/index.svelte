@@ -3,13 +3,13 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-21 20:51:41
+ LastEditTime : 2023-08-22 15:45:29
  Description  : 
 -->
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
     import AllActives from './all-actives.svelte';
-    import RunningAction from './running-action.svelte';
+    import LoggingActive from './logging-active.svelte';
     import { TimeLogSession, sessionHub } from "@/actives";
 
     import { eventBus } from "@/utils";
@@ -58,7 +58,7 @@
 
     <section id="running-action-list">
         {#each runningSession as session}
-            <RunningAction session={session} />
+            <LoggingActive session={session} />
         {/each}
     </section>
 
