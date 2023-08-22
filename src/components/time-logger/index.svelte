@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-22 15:45:29
+ LastEditTime : 2023-08-22 16:28:39
  Description  : 
 -->
 <script lang="ts">
@@ -21,6 +21,13 @@
         eventBus.on("on-session-stop", onstop);
         eventBus.on("on-session-del", onstop);
         console.log("On Mount");
+
+        let sessions = [];
+        for (let id in sessionHub.sessions) {
+            sessions.push(sessionHub.sessions[id]);
+        }
+        runningSession = sessions;
+
     });
     onDestroy(() => {
         eventBus.off("on-session-stop", onstop);

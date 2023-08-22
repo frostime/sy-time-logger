@@ -20,14 +20,14 @@
     // };
 
     // let session: TimeLogSession = sessionHub.new(active);
-    let timer: string = "00:00:00";
+    let timer: string = time2str(session.elapsed / 1000);
     const update = (elapsed) => {
         timer = time2str(elapsed / 1000);
     };
     session.addCallback(update);
 
     type Status = "running" | "pause" | "stop";
-    let status: Status = "pause";
+    let status: Status = session.status;
 
     const start = () => {
         if (status == "stop") return;

@@ -12,6 +12,8 @@ export class TimeLogSession implements ITimeLog {
     runningElapsed: number;
     runId: string;
 
+    status: "running" | "pause" | "stop";
+
     callbacks = [];
 
     constructor(active: IActive) {
@@ -23,6 +25,7 @@ export class TimeLogSession implements ITimeLog {
         this.memo = "";
         this.runningElapsed = 0;
         this.callbacks = [];
+        this.status = "pause";
     }
 
     export(): ITimeLog {
