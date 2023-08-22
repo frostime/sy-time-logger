@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-22 17:56:49
+ * @LastEditTime : 2023-08-22 20:46:03
  * @Description  : 
  */
 import {
@@ -11,12 +11,15 @@ import {
     showMessage,
     Menu,
     getFrontend,
+    Dialog,
 } from "siyuan";
 import "@/index.scss";
 
+import TimeLogger from "./components/time-logger/index.svelte";
+import { chooseIcon } from "./components";
+
 import { eventBus, setEventBus, time2str } from "./utils";
 
-import TimeLogger from "./components/time-logger/index.svelte";
 import { TimeLogSession, sessionHub } from "./actives";
 
 const DATA_TIME_LOGGER = "time-log.json";
@@ -110,7 +113,10 @@ export default class PluginSample extends Plugin {
     }
 
     openSetting(): void {
-        
+        chooseIcon().then((detail) => {
+            console.log(detail);
+        });
+
     }
 
     private addMenu(rect?: DOMRect) {
