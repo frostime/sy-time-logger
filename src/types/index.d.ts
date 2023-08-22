@@ -1,10 +1,17 @@
-/**
- * Copyright (c) 2023 frostime. All rights reserved.
+/*
+ * Copyright (c) 2023 by Yp Z (frostime). All Rights Reserved.
+ * @Author       : Yp Z
+ * @Date         : 2023-08-20 21:30:11
+ * @FilePath     : /src/types/index.d.ts
+ * @LastEditTime : 2023-08-21 20:48:02
+ * @Description  : 
  */
 
 /**
  * Frequently used data structures in SiYuan
  */
+import { TEventBus } from "siyuan";
+
 type DocumentId = string;
 type BlockId = string;
 type NotebookId = string;
@@ -79,4 +86,16 @@ interface Window {
         ws: any;
         languages: any;
     };
+}
+
+type TEvents = TEventBus | "on-session-stop";
+
+interface IEventBus {
+    on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;
+
+    once(type: TEvents, listener: (event: CustomEvent<any>) => void): void;
+
+    off(type: TEvents, listener: (event: CustomEvent<any>) => void): void;
+
+    emit(type: TEvents, detail?: any): boolean;
 }
