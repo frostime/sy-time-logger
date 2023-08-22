@@ -91,7 +91,9 @@ interface Window {
 type TEvents = TEventBus
                 | "on-session-stop" // log session 正常结束
                 | "on-session-del" // log session 被关闭并删除
-                | "open-settings";
+                | "open-settings"
+                | "load-data"
+                | "save-data";
 
 interface IEventBus {
     on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;

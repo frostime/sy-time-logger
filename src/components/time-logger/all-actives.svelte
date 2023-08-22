@@ -10,6 +10,8 @@
     import { createEventDispatcher } from "svelte";
     import Active from "./active.svelte";
 
+    export let actives: IActive[];
+
     const dispatch = createEventDispatcher();
 
     const ItemWidth: number = 60;
@@ -25,53 +27,6 @@
         var itemsPerRow = Math.floor(containerWidth / (ItemWidth));
         container.style.flexBasis = containerWidth / itemsPerRow + "px";
     }
-
-    //@ts-ignore
-    const emoji = window.siyuan.emojis;
-    let actives: IActive[] = [
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[1].items[0].unicode,
-            },
-            title: "说明"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[1].items[1].unicode,
-            },
-            title: "说明"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[4].items[3].unicode,
-            },
-            title: "Academic"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[1].items[0].unicode
-            },
-            title: "Take notes"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[2].items[10].unicode
-            },
-            title: "大声说明出来啊！"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[4].items[20].unicode
-            },
-            title: "阅读论文"
-        }
-    ]
 
 </script>
 

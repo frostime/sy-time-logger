@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-22 17:55:56
+ LastEditTime : 2023-08-22 21:57:31
  Description  : 
 -->
 <script lang="ts">
@@ -13,6 +13,10 @@
     import { TimeLogSession, sessionHub } from "@/actives";
 
     import { eventBus } from "@/utils";
+
+    import { activeHub } from "@/actives";
+
+    let currentActives: IActive[] = activeHub.rootActives;
 
     const doNothing = () => {};
     let runningSession: TimeLogSession[] = [];
@@ -72,5 +76,5 @@
         {/each}
     </section>
 
-    <AllActives on:click={onclick}/>
+    <AllActives on:click={onclick} actives={currentActives}/>
 </div>

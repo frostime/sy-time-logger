@@ -26,6 +26,33 @@ class Active implements IActive {
     }
 }
 
+export const PredefinedActives: IActive[] = [
+    {
+        id: "Learn#001",
+        emoji: {
+            type: "objects",
+            code: "1f4bb",
+        },
+        title: "学习",
+    },
+    {
+        id: "Write#001",
+        emoji: {
+            type: "objects",
+            code: "270f",
+        },
+        title: "写作",
+    },
+    {
+        id: "Think#001",
+        emoji: {
+            type: "objects",
+            code: "1f914",
+        },
+        title: "思考",
+    },
+];
+
 export class ActiveHub {
     rootActives: Active[];
 
@@ -38,6 +65,8 @@ export class ActiveHub {
         this.rootActives.push(item);
     }
 }
+
+export let activeHub = new ActiveHub();
 
 
 export class TimeLogSession implements ITimeLog {
