@@ -83,6 +83,8 @@ export class ActiveHub {
         let item = active instanceof Active ? active : new Active(active);
         this.rootActives.push(item);
         this.allActives.set(item.id, item);
+        eventBus.emit("on-active-updated");
+        return true;
     }
 
     del(active: IActive) {
