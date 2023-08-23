@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { fly } from 'svelte/transition';
+
     import { time2str } from "@/utils";
     import Active from "./active.svelte";
     import { TimeLogSession } from "@/actives";
@@ -66,7 +68,7 @@
     };
 </script>
 
-<div class="running-active">
+<div class="running-active" out:fly="{{ x: 200, duration: 1000 }}">
     <div>
         <Active
             size={{ item: 40, emoji: 30, title: 12, emojiFontsize: 25 }}
