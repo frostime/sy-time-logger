@@ -119,7 +119,11 @@ export default class PluginSample extends Plugin {
         });
         eventBus.on("on-active-updated", (e: CustomEvent<IActive>) => {
             let active = e.detail;
+            this.data[DATA_ACTIVES] = activeHub.rootActives;
+            this.saveData(DATA_ACTIVES, this.data[DATA_ACTIVES]);
+
             if (!active) return;
+            //更新正在运行的session 的 Active 信息
             for (let id in sessionHub.sessions) {
                 let session = sessionHub.sessions[id];
                 if (session.active.id === active.id) {
