@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-23 21:46:47
+ * @LastEditTime : 2023-08-24 00:23:01
  * @Description  : 
  */
 import {
@@ -116,6 +116,16 @@ export default class PluginSample extends Plugin {
                 this.data[name] = data;
                 callback(data);
             });
+        });
+        eventBus.on("on-active-updated", (e: CustomEvent<IActive>) => {
+            let active = e.detail;
+            for (let id in sessionHub.sessions) {
+                let session = sessionHub.sessions[id];
+                if (session.active.id === active.id) {
+                    session.active = active;
+                    session.updateActiveCallback();
+                }
+            }
         });
 
         // set default storage

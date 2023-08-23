@@ -14,6 +14,10 @@
     let active: IActive;
     $: active = session.active;
 
+    const updateActive = () => {
+        active = session.active;
+    };
+
     //@ts-ignore
     // const emoji = window.siyuan.emojis;
     // let active: IActive = {
@@ -39,6 +43,7 @@
         timer = time2str(elapsed / 1000);
     };
     session.addCallback(update);
+    session.updateActiveCallback = updateActive;
 
     type Status = "running" | "pause" | "stop";
     let status: Status = session.status;

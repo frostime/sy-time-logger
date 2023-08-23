@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-24 00:06:13
+ LastEditTime : 2023-08-24 00:13:05
  Description  : 
 -->
 <script lang="ts">
@@ -19,10 +19,6 @@
     let rootActive: IActive = null;
     let currentActives: IActive[] = activeHub.getActives(rootActive);
 
-    eventBus.on("on-active-updated", () => {
-        updateActives();
-    });
-
     const updateActives = () => {
         currentActives = activeHub.getActives(rootActive);
     };
@@ -33,6 +29,7 @@
     onMount(() => {
         eventBus.on("on-session-stop", removeActive);
         eventBus.on("on-session-del", removeActive);
+        eventBus.on("on-active-updated", updateActives);
 
         let sessions = [];
         for (let id in sessionHub.sessions) {
@@ -44,6 +41,7 @@
     onDestroy(() => {
         eventBus.off("on-session-stop", removeActive);
         eventBus.off("on-session-del", removeActive);
+        eventBus.off("on-active-updated", updateActives);
     });
 
 

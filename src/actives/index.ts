@@ -94,7 +94,7 @@ export class ActiveHub {
         item.title = active.title;
         item.isGroup = active.isGroup;
 
-        eventBus.emit("on-active-updated");
+        eventBus.emit("on-active-updated", item);
 
         return true;
     }
@@ -145,6 +145,13 @@ export class TimeLogSession implements ITimeLog {
 
     addCallback(callback: Function) {
         this.callbacks.push(callback);
+    }
+
+    /**
+     * 供 svelte 组件重载, 以方便触发更新
+     */
+    updateActiveCallback() {
+
     }
 
     start() {

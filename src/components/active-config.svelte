@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-24 00:06:31
+ LastEditTime : 2023-08-24 00:14:15
  Description  : 
 -->
 <script lang="ts">
@@ -16,12 +16,17 @@
 
     import { activeHub } from "@/actives";
     import { eventBus } from "@/utils";
+    import { onDestroy, onMount } from "svelte";
 
     let rootActive: IActive = null;
     let currentActives: IActive[] = activeHub.getActives(rootActive);
 
-    eventBus.on("on-active-updated", () => {
-        updateActives();
+    onMount(() => {
+        eventBus.on("on-active-updated", updateActives);
+    });
+
+    onDestroy(() => {
+        eventBus.off("on-active-updated", updateActives);
     });
 
     const updateActives = () => {
