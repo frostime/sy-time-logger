@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:42:06
  FilePath     : /src/components/libs/emoji.svelte
- LastEditTime : 2023-08-21 20:14:34
+ LastEditTime : 2023-08-23 22:33:01
  Description  : 
 -->
 <script lang="ts">
@@ -33,12 +33,12 @@
 
 </script>
 
-<div class="emojis" style="{styleWidth}">
+<div style="{styleWidth} text-align: center;">
     {#if type === "custom"}
         <img class="" src="/emojis/{code}" alt="">
     {:else}
         <span class="emoji-unicode"
-            style="height: {width}; width: {width}; line-height: {width}; font-size: {unicodeFontSize}px;"
+            style="font-size: {unicodeFontSize}px;"
         >
             {parseEmoji(code)}
         </span>

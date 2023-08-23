@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-22 21:54:55
+ * @LastEditTime : 2023-08-23 21:46:47
  * @Description  : 
  */
 import {
@@ -16,6 +16,7 @@ import {
 import "@/index.scss";
 
 import TimeLogger from "./components/time-logger/index.svelte";
+import ActiveConfig from "./components/active-config.svelte";
 import { chooseIcon } from "./components";
 
 import { eventBus, setEventBus, time2str } from "./utils";
@@ -133,10 +134,16 @@ export default class PluginSample extends Plugin {
     }
 
     openSetting(): void {
-        chooseIcon().then((detail) => {
-            console.log(detail);
+        const dialog = new Dialog({
+            title: "配置",
+            content: `<div id="ActiveConfig" style="height: 100%; margin: 5px;"/>`,
+            width: "500px",
+            height: "500px"
         });
-
+        let ele = dialog.element.querySelector('#ActiveConfig');
+        new ActiveConfig({
+            target: ele,
+        });
     }
 
     private addMenu(rect?: DOMRect) {
