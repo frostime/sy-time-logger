@@ -68,7 +68,7 @@
     };
 </script>
 
-<div class="running-active" out:fly="{{ x: 200, duration: 1000 }}">
+<div class="running-active" out:fly="{{ x: 200, duration: 250 }}">
     <div>
         <Active
             size={{ item: 40, emoji: 30, title: 12, emojiFontsize: 25 }}
