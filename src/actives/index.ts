@@ -1,5 +1,108 @@
 import { eventBus } from "@/utils";
 
+class Active implements IActive {
+
+    id: string;
+    emoji: {
+        type: string;
+        code: string;
+    };
+    title: string;
+    isGroup: boolean;
+
+    parent?: Active;
+    children?: Active[];
+
+    constructor(data: IActive) {
+        this.id = data.id ?? Date.now().toString(16);
+        this.emoji = data.emoji;
+        this.title = data.title;
+        this.isGroup = data.isGroup ?? false;
+        this.parent = null;
+        this.children = [];
+    }
+
+    addChild(active: Active) {
+        this.children.push(active);
+        active.parent = this;
+    }
+}
+
+export const PredefinedActives: IActive[] = [
+    {
+        id: "Learn#001",
+        emoji: {
+            type: "objects",
+            code: "1f4bb",
+        },
+        title: "学习",
+        isGroup: false,
+    },
+    {
+        id: "Write#001",
+        emoji: {
+            type: "objects",
+            code: "270f",
+        },
+        title: "写作",
+        isGroup: false,
+    },
+    {
+        id: "Think#001",
+        emoji: {
+            type: "objects",
+            code: "1f914",
+        },
+        title: "思考",
+        isGroup: false,
+    },
+];
+
+export class ActiveHub {
+    rootActives: Active[];
+    allActives: Map<string, Active>;
+
+    constructor() {
+        this.rootActives = [];
+        this.allActives = new Map();
+    }
+
+    getActives(root?: IActive) {
+        if (!root) {
+            return this.rootActives;
+        }
+        let active = this.allActives.get(root.id);
+        if (!active) {
+            return [];
+        }
+        return active.children;
+    }
+
+    add(active: IActive | Active) {
+        let item = active instanceof Active ? active : new Active(active);
+        this.rootActives.push(item);
+        this.allActives.set(item.id, item);
+    }
+
+    update(active: IActive) {
+        let item = this.allActives.get(active.id);
+        if (!item) {
+            console.error("Active not found", active);
+            return false;
+        }
+        item.emoji = active.emoji;
+        item.title = active.title;
+        item.isGroup = active.isGroup;
+
+        eventBus.emit("on-active-updated", item);
+
+        return true;
+    }
+}
+
+export let activeHub = new ActiveHub();
+
+
 export class TimeLogSession implements ITimeLog {
     active: IActive;
     beg: TTimestamp;
@@ -42,6 +145,13 @@ export class TimeLogSession implements ITimeLog {
 
     addCallback(callback: Function) {
         this.callbacks.push(callback);
+    }
+
+    /**
+     * 供 svelte 组件重载, 以方便触发更新
+     */
+    updateActiveCallback() {
+
     }
 
     start() {
@@ -98,7 +208,7 @@ export class TimeLogSession implements ITimeLog {
 }
 
 export class TimeLogSessionHub {
-    sessions: { [key: string]: TimeLogSession};
+    sessions: { [key: string]: TimeLogSession };
 
     constructor() {
         this.sessions = {};

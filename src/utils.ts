@@ -1,4 +1,5 @@
 import type { IEventBus } from "./types/index.d.ts";
+import { confirm, Dialog } from "siyuan";
 
 export function time2str(time: number) {
     // console.log(time);
@@ -17,3 +18,27 @@ export let eventBus: IEventBus;
 export let setEventBus = (bus: IEventBus) => {
     eventBus = bus;
 }
+
+export function inputDialog(title: string, text: string = "", placeholder?: string): Promise<string> {
+    let inputDom = `
+    <div class="b3-form__icon">
+        <svg class="b3-form__icon-icon"><use xlink:href="#iconEdit"></use></svg>
+        <input
+            class="b3-text-field fn__block b3-form__icon-input"
+            id="input-text" value="${text}" placeholder="${placeholder || ""}"
+        />
+    </div>
+    `;
+    return new Promise<string>((resolve, reject) => {
+        confirm(title, inputDom,
+            (dialog: Dialog) => {
+                let input = dialog.element.querySelector("#input-text") as HTMLInputElement;
+                resolve(input.value);
+            },
+            () => {
+                reject();
+            }
+        );
+    });
+}
+

@@ -3,12 +3,14 @@
  Author       : Yp Z
  Date         : 2023-08-22 14:45:10
  FilePath     : /src/components/time-logger/all-actives.svelte
- LastEditTime : 2023-08-22 15:52:00
+ LastEditTime : 2023-08-24 00:03:40
  Description  : 
 -->
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import Active from "./active.svelte";
+
+    export let actives: IActive[];
 
     const dispatch = createEventDispatcher();
 
@@ -26,59 +28,12 @@
         container.style.flexBasis = containerWidth / itemsPerRow + "px";
     }
 
-    //@ts-ignore
-    const emoji = window.siyuan.emojis;
-    let actives: IActive[] = [
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[1].items[0].unicode,
-            },
-            title: "说明"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[1].items[1].unicode,
-            },
-            title: "说明"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[4].items[3].unicode,
-            },
-            title: "Academic"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[1].items[0].unicode
-            },
-            title: "Take notes"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[2].items[10].unicode
-            },
-            title: "大声说明出来啊！"
-        },
-        {
-            emoji: {
-                type: "unicode",
-                code: emoji[4].items[20].unicode
-            },
-            title: "阅读论文"
-        }
-    ]
-
 </script>
 
 <section class="all-actives" id="all-actives"
     on:resize={onResize}
 >
-    {#each actives as active}
+    {#each actives as active (active.id)}
         <Active size={Size} active={active} on:click={
             () => {
                 dispatch("click", active);

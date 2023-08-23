@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-21 20:18:13
+ LastEditTime : 2023-08-23 22:40:06
  Description  : 单个活动项目
 -->
 <script lang="ts">
@@ -23,8 +23,9 @@
 
 
     const dispatch = createEventDispatcher();
-    const onclick = () => {
+    const onclick = (e: MouseEvent) => {
         dispatch("click");
+        e.stopPropagation();
     };
 
 </script>

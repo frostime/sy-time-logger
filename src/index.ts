@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-22 16:22:21
+ * @LastEditTime : 2023-08-24 00:23:01
  * @Description  : 
  */
 import {
@@ -11,15 +11,20 @@ import {
     showMessage,
     Menu,
     getFrontend,
+    Dialog,
 } from "siyuan";
 import "@/index.scss";
 
+import TimeLogger from "./components/time-logger/index.svelte";
+import ActiveConfig from "./components/active-config.svelte";
+import { chooseIcon } from "./components";
+
 import { eventBus, setEventBus, time2str } from "./utils";
 
-import TimeLogger from "./components/time-logger/index.svelte";
-import { TimeLogSession, sessionHub } from "./actives";
+import { TimeLogSession, sessionHub, PredefinedActives, activeHub } from "./actives";
 
 const DATA_TIME_LOGGER = "time-log.json";
+const DATA_ACTIVES = "actives.json";
 
 export default class PluginSample extends Plugin {
 
@@ -79,10 +84,6 @@ export default class PluginSample extends Plugin {
             }
         });
 
-        // set default storage
-        let data_time_logger = await this.loadData(DATA_TIME_LOGGER);
-        this.data[DATA_TIME_LOGGER] = data_time_logger || [];
-
         eventBus.on("on-session-stop", (event: CustomEvent<TimeLogSession>) => {
             let session = event.detail;
             let timelog: ITimeLog = session.export();
@@ -100,10 +101,59 @@ export default class PluginSample extends Plugin {
         }
         eventBus.on("on-session-stop", del);
         eventBus.on("on-session-del", del);
+        eventBus.on("open-settings", () => {
+            this.openSetting();
+        });
+
+        eventBus.on("save-data", (event: CustomEvent<{name: string, data: any}>) => {
+            let { name, data } = event.detail;
+            this.data[name] = data;
+            this.saveData(name, data);
+        });
+        eventBus.on("load-data", (event: CustomEvent<{name: string, callback: CallableFunction}>) => {
+            let { name, callback } = event.detail;
+            this.loadData(name).then((data) => {
+                this.data[name] = data;
+                callback(data);
+            });
+        });
+        eventBus.on("on-active-updated", (e: CustomEvent<IActive>) => {
+            let active = e.detail;
+            for (let id in sessionHub.sessions) {
+                let session = sessionHub.sessions[id];
+                if (session.active.id === active.id) {
+                    session.active = active;
+                    session.updateActiveCallback();
+                }
+            }
+        });
+
+        // set default storage
+        let data_time_logger = await this.loadData(DATA_TIME_LOGGER);
+        this.data[DATA_TIME_LOGGER] = data_time_logger || [];
+
+        let data_actives = await this.loadData(DATA_ACTIVES);
+        this.data[DATA_ACTIVES] = data_actives || PredefinedActives;
+        for (let active of this.data[DATA_ACTIVES]) {
+            activeHub.add(active);
+        }
 
     }
     onunload() {
         this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
+    }
+
+    openSetting(): void {
+        const dialog = new Dialog({
+            title: "配置",
+            content: `<div id="ActiveConfig" style="height: 100%; margin: 5px;"/>`,
+            width: "500px",
+            height: "500px"
+        });
+        let ele = dialog.element.querySelector('#ActiveConfig');
+        new ActiveConfig({
+            target: ele,
+        });
     }
 
     private addMenu(rect?: DOMRect) {
