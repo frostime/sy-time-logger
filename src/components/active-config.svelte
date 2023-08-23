@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-23 23:42:28
+ LastEditTime : 2023-08-23 23:50:17
  Description  : 
 -->
 <script lang="ts">
@@ -12,6 +12,8 @@
     // import Active from "./time-logger/active.svelte";
     import Emoji from "@/components/libs/emoji.svelte";
     import AllActives from "./time-logger/all-actives.svelte";
+    import { chooseIcon } from "@/components";
+
     import { activeHub } from "@/actives";
 
     let currentActives: IActive[] = activeHub.rootActives;
@@ -30,6 +32,23 @@
         focusedActive = e.detail;
         e.stopPropagation();
     };
+
+    const onchooseicon = () => {
+        console.log("choose icon");
+        chooseIcon().then((ans: any) => {
+            // console.log("choose icon ans", ans);
+            let emoji = {
+                type: ans.type,
+                code: ans.unicode
+            };
+            focusedActive.emoji = emoji;
+        });
+    };
+
+    const onsave = () => {
+        console.log("save");
+    };
+
 </script>
 
 <main>
@@ -69,7 +88,11 @@
                     <div class="b3-label__text">点击右侧更改图标</div>
                 </div>
                 <span class="fn__space" />
-                <div class="fn__flex-center fn__size200 attr-value">
+                <div class="fn__flex-center fn__size200 attr-value"
+                    style="cursor: pointer;"
+                    on:click={onchooseicon}
+                    on:keypress={() => {}}
+                >
                     <Emoji
                         type={focusedActive.emoji.type}
                         code={focusedActive.emoji.code}
@@ -108,6 +131,7 @@
                     </button>
                     <button
                         class="b3-button b3-button--text"
+                        on:click={onsave}
                     >
                         保存
                     </button>
