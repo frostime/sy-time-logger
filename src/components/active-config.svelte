@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-24 00:14:15
+ LastEditTime : 2023-08-24 00:55:52
  Description  : 
 -->
 <script lang="ts">
@@ -17,6 +17,8 @@
     import { activeHub } from "@/actives";
     import { eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
+
+    import {confirm} from "siyuan";
 
     let rootActive: IActive = null;
     let currentActives: IActive[] = activeHub.getActives(rootActive);
@@ -60,6 +62,13 @@
         });
     };
 
+    const ondel = () => {
+        confirm("确认", "确定要删除?", ()=> {
+            activeHub.del(focusedActive);
+            focusedActive = null;
+        });
+    };
+
     const onsave = () => {
         console.log("save");
         activeHub.update(focusedActive);
@@ -81,11 +90,27 @@
 
     {#if focusedActive}
         <div
-            class="fn__flex--column"
+            class="fn__flex-column"
             id="selected-active"
             out:fly={{ y: 200, duration: 100 }}
             in:fly={{ y: 200, duration: 100 }}
         >
+            <div style="display: flex; padding: 16px 24px;">
+                <div class="b3-label__text fn__flex-1"
+                >
+                    {focusedActive.id}
+                </div>
+                <div class="b3-tooltips b3-tooltips__s"
+                    aria-label="删除"
+                    on:click={ondel}
+                    on:keypress={() => {}}
+                >
+                    <svg style="width: 20px; height: 20px; color: var(--b3-theme-error);"
+                    >
+                        <use xlink:href="#iconTrashcan"></use>
+                    </svg>
+                </div>
+            </div>
             <div class="fn__flex b3-label">
                 <div class="fn__flex-1">
                     标题
