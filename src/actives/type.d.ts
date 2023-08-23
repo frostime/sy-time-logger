@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-21 18:58:55
  * @FilePath     : /src/actives/type.d.ts
- * @LastEditTime : 2023-08-22 11:49:33
+ * @LastEditTime : 2023-08-23 23:52:54
  * @Description  : 
  */
 interface IActive {
@@ -13,6 +13,7 @@ interface IActive {
         code: string;
     };
     title: string;
+    isGroup: boolean;
 }
 
 type TTimestamp = number;

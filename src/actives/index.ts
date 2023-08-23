@@ -8,6 +8,7 @@ class Active implements IActive {
         code: string;
     };
     title: string;
+    isGroup: boolean;
 
     parent?: Active;
     children?: Active[];
@@ -16,6 +17,7 @@ class Active implements IActive {
         this.id = data.id ?? Date.now().toString(16);
         this.emoji = data.emoji;
         this.title = data.title;
+        this.isGroup = data.isGroup ?? false;
         this.parent = null;
         this.children = [];
     }
@@ -34,6 +36,7 @@ export const PredefinedActives: IActive[] = [
             code: "1f4bb",
         },
         title: "学习",
+        isGroup: false,
     },
     {
         id: "Write#001",
@@ -42,6 +45,7 @@ export const PredefinedActives: IActive[] = [
             code: "270f",
         },
         title: "写作",
+        isGroup: false,
     },
     {
         id: "Think#001",
@@ -50,19 +54,49 @@ export const PredefinedActives: IActive[] = [
             code: "1f914",
         },
         title: "思考",
+        isGroup: false,
     },
 ];
 
 export class ActiveHub {
     rootActives: Active[];
+    allActives: Map<string, Active>;
 
     constructor() {
         this.rootActives = [];
+        this.allActives = new Map();
+    }
+
+    getActives(root?: IActive) {
+        if (!root) {
+            return this.rootActives;
+        }
+        let active = this.allActives.get(root.id);
+        if (!active) {
+            return [];
+        }
+        return active.children;
     }
 
     add(active: IActive | Active) {
         let item = active instanceof Active ? active : new Active(active);
         this.rootActives.push(item);
+        this.allActives.set(item.id, item);
+    }
+
+    update(active: IActive) {
+        let item = this.allActives.get(active.id);
+        if (!item) {
+            console.error("Active not found", active);
+            return false;
+        }
+        item.emoji = active.emoji;
+        item.title = active.title;
+        item.isGroup = active.isGroup;
+
+        eventBus.emit("on-active-updated");
+
+        return true;
     }
 }
 

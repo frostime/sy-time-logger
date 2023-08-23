@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-22 14:45:10
  FilePath     : /src/components/time-logger/all-actives.svelte
- LastEditTime : 2023-08-22 15:52:00
+ LastEditTime : 2023-08-24 00:03:40
  Description  : 
 -->
 <script lang="ts">
@@ -33,7 +33,7 @@
 <section class="all-actives" id="all-actives"
     on:resize={onResize}
 >
-    {#each actives as active}
+    {#each actives as active (active.id)}
         <Active size={Size} active={active} on:click={
             () => {
                 dispatch("click", active);

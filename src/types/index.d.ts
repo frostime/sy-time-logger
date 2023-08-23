@@ -93,7 +93,8 @@ type TEvents = TEventBus
                 | "on-session-del" // log session 被关闭并删除
                 | "open-settings"
                 | "load-data"
-                | "save-data";
+                | "save-data"
+                | "on-active-updated";
 
 interface IEventBus {
     on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;

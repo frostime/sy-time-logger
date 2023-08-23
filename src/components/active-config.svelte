@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-23 23:50:17
+ LastEditTime : 2023-08-24 00:06:31
  Description  : 
 -->
 <script lang="ts">
@@ -15,8 +15,18 @@
     import { chooseIcon } from "@/components";
 
     import { activeHub } from "@/actives";
+    import { eventBus } from "@/utils";
 
-    let currentActives: IActive[] = activeHub.rootActives;
+    let rootActive: IActive = null;
+    let currentActives: IActive[] = activeHub.getActives(rootActive);
+
+    eventBus.on("on-active-updated", () => {
+        updateActives();
+    });
+
+    const updateActives = () => {
+        currentActives = activeHub.getActives(rootActive);
+    };
 
     let rootStyles = getComputedStyle(document.documentElement);
     const SvgColor = {
@@ -47,6 +57,8 @@
 
     const onsave = () => {
         console.log("save");
+        activeHub.update(focusedActive);
+        focusedActive = null;
     };
 
 </script>
@@ -111,6 +123,7 @@
                     <input
                         class="b3-switch fn__flex-center"
                         type="checkbox"
+                        bind:checked={focusedActive.isGroup}
                     />
                 </div>
             </div>
