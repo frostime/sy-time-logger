@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-24 00:13:05
+ LastEditTime : 2023-08-24 20:29:17
  Description  : 
 -->
 <script lang="ts">
@@ -57,7 +57,7 @@
 
 </script>
 
-<div class="fn__flex-1">
+<div class="fn__flex-1" style="padding-bottom: 25px;">
     <div class="block__icons">
         <div class="block__logo">
             <svg><use xlink:href="#iconBookmark" /></svg>
