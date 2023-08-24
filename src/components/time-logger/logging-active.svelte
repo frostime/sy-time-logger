@@ -79,6 +79,7 @@
             size={{ item: 40, emoji: 30, title: 12, emojiFontsize: 25 }}
             {active}
             showTitle={false}
+            style={"margin-right: 5px;"}
         />
     </div>
     <div class="running"
@@ -117,7 +118,7 @@
 <style lang="scss">
     div.running-active {
         display: flex;
-        gap: 15px;
+        gap: 5px;
 
         // border-top: 1px solid var(--b3-border-color);
         border-bottom: 2px dashed var(--b3-border-color);

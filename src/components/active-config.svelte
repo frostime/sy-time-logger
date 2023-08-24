@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-24 00:14:15
+ LastEditTime : 2023-08-24 01:04:25
  Description  : 
 -->
 <script lang="ts">
@@ -17,6 +17,8 @@
     import { activeHub } from "@/actives";
     import { eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
+
+    import { confirm } from "siyuan";
 
     let rootActive: IActive = null;
     let currentActives: IActive[] = activeHub.getActives(rootActive);
@@ -51,21 +53,42 @@
     const onchooseicon = () => {
         console.log("choose icon");
         chooseIcon().then((ans: any) => {
-            // console.log("choose icon ans", ans);
+            console.log("choose icon", ans);
             let emoji = {
                 type: ans.type,
-                code: ans.unicode
+                code: ans.unicode,
             };
             focusedActive.emoji = emoji;
         });
     };
 
-    const onsave = () => {
-        console.log("save");
-        activeHub.update(focusedActive);
-        focusedActive = null;
+    const ondel = () => {
+        confirm("确认", "确定要删除?", () => {
+            activeHub.del(focusedActive);
+            focusedActive = null;
+        });
     };
 
+    const add = () => {
+        focusedActive = {
+            emoji: {
+                type: "symbols",
+                code: "1f518",
+            },
+            title: "新建项目",
+            isGroup: false,
+        };
+    };
+
+    const onsave = () => {
+        console.log("save");
+        if (focusedActive.id) {
+            activeHub.update(focusedActive);
+        } else {
+            activeHub.add(focusedActive);
+        }
+        focusedActive = null;
+    };
 </script>
 
 <main>
@@ -81,11 +104,30 @@
 
     {#if focusedActive}
         <div
-            class="fn__flex--column"
+            class="fn__flex-column"
             id="selected-active"
             out:fly={{ y: 200, duration: 100 }}
             in:fly={{ y: 200, duration: 100 }}
         >
+            <div style="display: flex; padding: 16px 24px;">
+                <div class="b3-label__text fn__flex-1">
+                    {focusedActive.id ?? "新建项目"}
+                </div>
+                {#if focusedActive.id}
+                    <div
+                        class="b3-tooltips b3-tooltips__s"
+                        aria-label="删除"
+                        on:click={ondel}
+                        on:keypress={() => {}}
+                    >
+                        <svg
+                            style="width: 20px; height: 20px; color: var(--b3-theme-error);"
+                        >
+                            <use xlink:href="#iconTrashcan" />
+                        </svg>
+                    </div>
+                {/if}
+            </div>
             <div class="fn__flex b3-label">
                 <div class="fn__flex-1">
                     标题
@@ -105,7 +147,8 @@
                     <div class="b3-label__text">点击右侧更改图标</div>
                 </div>
                 <span class="fn__space" />
-                <div class="fn__flex-center fn__size200 attr-value"
+                <div
+                    class="fn__flex-center fn__size200 attr-value"
                     style="cursor: pointer;"
                     on:click={onchooseicon}
                     on:keypress={() => {}}
@@ -133,10 +176,10 @@
                 </div>
             </div>
             <div class="fn__flex b3-label">
-                <div class="fn__flex-1">
-                </div>
+                <div class="fn__flex-1" />
                 <span class="fn__space" />
-                <div class="fn__flex-center fn__size200 attr-value"
+                <div
+                    class="fn__flex-center fn__size200 attr-value"
                     style="display: flex; gap: 10px;"
                 >
                     <button
@@ -147,10 +190,7 @@
                     >
                         取消
                     </button>
-                    <button
-                        class="b3-button b3-button--text"
-                        on:click={onsave}
-                    >
+                    <button class="b3-button b3-button--text" on:click={onsave}>
                         保存
                     </button>
                 </div>
@@ -159,9 +199,13 @@
     {/if}
 </main>
 
-<div id="btn-add" style="width: 24px; height: 24px; {focusedActive? "display: none" : ""}"
+<div
+    id="btn-add"
+    style="width: 24px; height: 24px; {focusedActive ? 'display: none' : ''}"
     in:fade={{ duration: 100 }}
     out:fade={{ duration: 100 }}
+    on:click={add}
+    on:keypress={() => {}}
 >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="11" fill={SvgColor.circle} />

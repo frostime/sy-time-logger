@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-24 00:23:01
+ * @LastEditTime : 2023-08-24 00:57:12
  * @Description  : 
  */
 import {
@@ -119,6 +119,11 @@ export default class PluginSample extends Plugin {
         });
         eventBus.on("on-active-updated", (e: CustomEvent<IActive>) => {
             let active = e.detail;
+            this.data[DATA_ACTIVES] = activeHub.rootActives;
+            this.saveData(DATA_ACTIVES, this.data[DATA_ACTIVES]);
+
+            if (!active) return;
+            //更新正在运行的session 的 Active 信息
             for (let id in sessionHub.sessions) {
                 let session = sessionHub.sessions[id];
                 if (session.active.id === active.id) {
@@ -147,8 +152,8 @@ export default class PluginSample extends Plugin {
         const dialog = new Dialog({
             title: "配置",
             content: `<div id="ActiveConfig" style="height: 100%; margin: 5px;"/>`,
-            width: "500px",
-            height: "500px"
+            width: "600px",
+            height: "600px"
         });
         let ele = dialog.element.querySelector('#ActiveConfig');
         new ActiveConfig({

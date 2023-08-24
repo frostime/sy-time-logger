@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-23 22:40:06
+ LastEditTime : 2023-08-24 12:09:22
  Description  : 单个活动项目
 -->
 <script lang="ts">
@@ -13,6 +13,7 @@
     export let size: { item: number; emoji: number; title: number; emojiFontsize?: number };
     export let active: IActive;
     export let showTitle: boolean = true;
+    export let style: string = "";
     // let emoji: { type: string; code: string };
     // let title: string;
 
@@ -33,7 +34,7 @@
 <div
     class="active b3-tooltips b3-tooltips__s"
     aria-label={active.title}
-    style="width: {size.item}px; height: {height}px;"
+    style="width: {size.item}px; height: {height}px; {style}"
     on:click={onclick}
     on:keypress={() => {}}
 >

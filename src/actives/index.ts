@@ -14,7 +14,8 @@ class Active implements IActive {
     children?: Active[];
 
     constructor(data: IActive) {
-        this.id = data.id ?? Date.now().toString(16);
+        let timedelta = Date.now() - 1672531200000;
+        this.id = data.id ?? `#${timedelta.toString(36).toUpperCase()}`;
         this.emoji = data.emoji;
         this.title = data.title;
         this.isGroup = data.isGroup ?? false;
@@ -30,7 +31,7 @@ class Active implements IActive {
 
 export const PredefinedActives: IActive[] = [
     {
-        id: "Learn#001",
+        id: "#001",
         emoji: {
             type: "objects",
             code: "1f4bb",
@@ -39,7 +40,7 @@ export const PredefinedActives: IActive[] = [
         isGroup: false,
     },
     {
-        id: "Write#001",
+        id: "#002",
         emoji: {
             type: "objects",
             code: "270f",
@@ -48,7 +49,7 @@ export const PredefinedActives: IActive[] = [
         isGroup: false,
     },
     {
-        id: "Think#001",
+        id: "#003",
         emoji: {
             type: "objects",
             code: "1f914",
@@ -82,6 +83,30 @@ export class ActiveHub {
         let item = active instanceof Active ? active : new Active(active);
         this.rootActives.push(item);
         this.allActives.set(item.id, item);
+        eventBus.emit("on-active-updated");
+        return true;
+    }
+
+    del(active: IActive) {
+        let item = this.allActives.get(active.id);
+        if (!item) {
+            console.error("Active not found", active);
+            return false;
+        }
+        if (item.parent) {
+            let index = item.parent.children.indexOf(item);
+            if (index >= 0) {
+                item.parent.children.splice(index, 1);
+            }
+        } else {
+            let index = this.rootActives.indexOf(item);
+            if (index >= 0) {
+                this.rootActives.splice(index, 1);
+            }
+        }
+        this.allActives.delete(active.id);
+        eventBus.emit("on-active-updated", item);
+        return true;
     }
 
     update(active: IActive) {
