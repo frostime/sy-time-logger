@@ -79,6 +79,20 @@ export class ActiveHub {
         return active.children;
     }
 
+    setActives(actives: IActive[] | Active[], root?: IActive) {
+        if (!root) {
+            this.rootActives = actives.map(active => active instanceof Active ? active : new Active(active));
+            eventBus.emit("on-active-updated");
+            return;
+        }
+        let active = this.allActives.get(root.id);
+        if (!active) {
+            return;
+        }
+        active.children = actives.map(active => active instanceof Active ? active : new Active(active));
+        eventBus.emit("on-active-updated");
+    }
+
     add(active: IActive | Active) {
         let item = active instanceof Active ? active : new Active(active);
         this.rootActives.push(item);

@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-24 01:04:25
+ LastEditTime : 2023-08-24 17:29:07
  Description  : 
 -->
 <script lang="ts">
@@ -89,6 +89,13 @@
         }
         focusedActive = null;
     };
+
+    const onreordered = (e: CustomEvent<IActive[]>) => {
+        console.log("reordered", e.detail);
+        // activeHub.updateActives(e.detail);
+        activeHub.setActives(e.detail, rootActive);
+    };
+
 </script>
 
 <main>
@@ -99,7 +106,9 @@
         }}
         on:keypress={() => {}}
     >
-        <AllActives on:click={onclick} actives={currentActives} />
+        <AllActives on:click={onclick} actives={currentActives} dragDisabled={false} 
+            on:reordered={onreordered}
+        />
     </div>
 
     {#if focusedActive}
