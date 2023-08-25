@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-25 14:35:27
+ LastEditTime : 2023-08-25 14:50:19
  Description  : 
 -->
 <script lang="ts">
@@ -173,7 +173,7 @@
                     />
                 </div>
             </div>
-            <div class="fn__flex b3-label">
+            <div class="fn__flex b3-label" style="display: none;">
                 <div class="fn__flex-1">
                     群组
                     <div class="b3-label__text">群组项目</div>
