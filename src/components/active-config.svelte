@@ -11,7 +11,7 @@
 
     // import Active from "./time-logger/active.svelte";
     import Emoji from "@/components/libs/emoji.svelte";
-    import AllActives from "./time-logger/all-actives.svelte";
+    import AllActivesGrid from "./time-logger/all-actives-grid.svelte";
     import { chooseIcon } from "@/components";
 
     import { activeHub } from "@/actives";
@@ -106,7 +106,7 @@
         }}
         on:keypress={() => {}}
     >
-        <AllActives on:click={onclick} actives={currentActives} dragDisabled={false} 
+        <AllActivesGrid on:click={onclick} actives={currentActives} dragDisabled={false} 
             on:reordered={onreordered}
         />
     </div>

@@ -3,12 +3,12 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-24 20:29:17
+ LastEditTime : 2023-08-25 14:22:39
  Description  : 
 -->
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
-    import AllActives from './all-actives.svelte';
+    import AllActivesGrid from './all-actives-grid.svelte';
     import LoggingActive from './logging-active.svelte';
     import { TimeLogSession, sessionHub } from "@/actives";
 
@@ -57,7 +57,7 @@
 
 </script>
 
-<div class="fn__flex-1" style="padding-bottom: 25px;">
+<div class="fn__flex-1" style="padding-bottom: 25px; overflow-x: hidden;">
     <div class="block__icons">
         <div class="block__logo">
             <svg><use xlink:href="#iconBookmark" /></svg>
@@ -83,5 +83,5 @@
         {/each}
     </section>
 
-    <AllActives on:click={onclick} actives={currentActives}/>
+    <AllActivesGrid on:click={onclick} actives={currentActives}/>
 </div>
