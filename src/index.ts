@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-24 17:51:49
+ * @LastEditTime : 2023-08-25 14:45:49
  * @Description  : 
  */
 import {
@@ -17,7 +17,6 @@ import "@/index.scss";
 
 import TimeLogger from "./components/time-logger/index.svelte";
 import ActiveConfig from "./components/active-config.svelte";
-import { chooseIcon } from "./components";
 
 import { eventBus, setEventBus, time2str } from "./utils";
 
@@ -151,7 +150,7 @@ export default class PluginSample extends Plugin {
     openSetting(): void {
         const dialog = new Dialog({
             title: "配置",
-            content: `<div id="ActiveConfig" style="height: 100%; margin: 5px;"/>`,
+            content: `<div id="ActiveConfig" style="height: 100%;"/>`,
             width: "500px",
             height: "500px"
         });

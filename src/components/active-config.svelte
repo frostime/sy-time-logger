@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-24 17:29:07
+ LastEditTime : 2023-08-25 14:35:27
  Description  : 
 -->
 <script lang="ts">
@@ -22,6 +22,8 @@
 
     let rootActive: IActive = null;
     let currentActives: IActive[] = activeHub.getActives(rootActive);
+
+    let disablGroupConfig = true;
 
     onMount(() => {
         eventBus.on("on-active-updated", updateActives);
@@ -63,7 +65,7 @@
     };
 
     const ondel = () => {
-        confirm("确认", "确定要删除?", () => {
+        confirm("确认", "<p>确定要删除?</p><p>删除后所有相关联的记录都将无效!</p>", () => {
             activeHub.del(focusedActive);
             focusedActive = null;
         });
@@ -78,6 +80,7 @@
             title: "新建项目",
             isGroup: false,
         };
+        disablGroupConfig = false;
     };
 
     const onsave = () => {
@@ -86,6 +89,7 @@
             activeHub.update(focusedActive);
         } else {
             activeHub.add(focusedActive);
+            disablGroupConfig = true;
         }
         focusedActive = null;
     };
@@ -113,7 +117,6 @@
 
     {#if focusedActive}
         <div
-            class="fn__flex-column"
             id="selected-active"
             out:fly={{ y: 200, duration: 100 }}
             in:fly={{ y: 200, duration: 100 }}
@@ -180,6 +183,7 @@
                     <input
                         class="b3-switch fn__flex-center"
                         type="checkbox"
+                        disabled={disablGroupConfig}
                         bind:checked={focusedActive.isGroup}
                     />
                 </div>
@@ -240,9 +244,14 @@
     main > div#selected-active {
         flex: 1;
 
-        border-top: 3px solid var(--b3-border-color);
-        border-left: 3px solid var(--b3-border-color);
-        border-right: 3px solid var(--b3-border-color);
+        display: flex;
+        flex-direction: column;
+
+        box-shadow: 0px -1px 10px -5px var(--b3-theme-on-surface);
+
+        // border-top: 3px solid var(--b3-border-color);
+        // border-left: 3px solid var(--b3-border-color);
+        // border-right: 3px solid var(--b3-border-color);
         border-top-left-radius: 15px;
         border-top-right-radius: 15px;
         margin-left: 10px;
