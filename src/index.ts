@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-25 14:45:49
+ * @LastEditTime : 2023-08-25 14:58:14
  * @Description  : 
  */
 import {
@@ -89,7 +89,7 @@ export default class PluginSample extends Plugin {
             if (timelog.elapsed == 0) {
                 return;
             }
-            showMessage(`活动结束, 共 ${time2str(timelog.elapsed / 1000)}`);
+            showMessage(`活动 ${session.active.title} 结束, 用时 ${time2str(timelog.elapsed / 1000)}`);
             this.data[DATA_TIME_LOGGER].push(timelog);
             this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
         });
