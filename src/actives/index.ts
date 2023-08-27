@@ -277,16 +277,17 @@ export class TimeLogSessionHub {
 
 export let sessionHub = new TimeLogSessionHub();
 
+/**从远往前排序 */
 const compareTimelog = (a: ITimeLog, b: ITimeLog) => {
     if (a.beg < b.beg) {
-        return -1;
-    } else if (a.beg > b.beg) {
         return 1;
+    } else if (a.beg > b.beg) {
+        return -1;
     } else {
         if (a.end < b.end) {
-            return -1;
-        } else if (a.end > b.end) {
             return 1;
+        } else if (a.end > b.end) {
+            return -1;
         } else {
             return 0;
         }
@@ -307,6 +308,7 @@ export class TimeLogManager {
     }
 
     async init(plugin: Plugin) {
+        this.plugin = plugin;
         plugin.data[DATA_TIME_LOGGER] = this.history;
         let logHistory: ITimeLog[] = await plugin.loadData(DATA_TIME_LOGGER);
         logHistory = logHistory || [];
@@ -341,9 +343,11 @@ export class TimeLogManager {
         let dateRange = Array.from(this.dateLog.keys());
         dateRange = dateRange.sort();
         let dateLogs: IDateLog[] = [];
-        dateRange.forEach(date => {
-            let timeLogs = this.dateLog.get(date);
+        dateRange.forEach(datestr => {
+            let timeLogs = this.dateLog.get(datestr);
             timeLogs = timeLogs.sort(compareTimelog);
+            let date = new Date(datestr);
+            date.setHours(0, 0, 0, 0);
             dateLogs.push({
                 date: new Date(date),
                 timeLogs: timeLogs,

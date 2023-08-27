@@ -95,7 +95,7 @@ type TEvents = TEventBus
                 | "load-data"
                 | "save-data"
                 | "on-active-updated"
-                | "open-history";
+                | "open-log-history";
 
 interface IEventBus {
     on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;

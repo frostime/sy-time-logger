@@ -17,6 +17,7 @@ import "@/index.scss";
 
 import TimeLogger from "./components/time-logger/index.svelte";
 import ActiveConfig from "./components/active-config.svelte";
+import HistoryTimelog from "./components/dashboard/history-timelog.svelte";
 
 import { eventBus, setEventBus, time2str } from "./utils";
 
@@ -132,6 +133,19 @@ export default class PluginSample extends Plugin {
                     session.updateActiveCallback();
                 }
             }
+        });
+
+        eventBus.on("open-log-history", () => {
+            const dialog = new Dialog({
+                title: "记录",
+                content: `<div id="LogHistory" style="height: 100%;"/>`,
+                width: "500px",
+                height: "500px"
+            });
+            let ele = dialog.element.querySelector('#LogHistory');
+            new HistoryTimelog({
+                target: ele,
+            });
         });
 
         // set default storage

@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-27 13:51:22
+ LastEditTime : 2023-08-27 13:57:12
  Description  : 
 -->
 <script lang="ts">
@@ -78,7 +78,7 @@
         <span class="fn__space" />
         <span
             on:click={() => {
-                eventBus.emit("open-history");
+                eventBus.emit("open-log-history");
             }}
             on:keydown={doNothing}
             class="block__icon b3-tooltips b3-tooltips__sw"
