@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-25 14:45:49
+ * @LastEditTime : 2023-08-27 13:52:26
  * @Description  : 
  */
 import {
@@ -17,10 +17,11 @@ import "@/index.scss";
 
 import TimeLogger from "./components/time-logger/index.svelte";
 import ActiveConfig from "./components/active-config.svelte";
+import HistoryTimelog from "./components/dashboard/history-timelog.svelte";
 
 import { eventBus, setEventBus, time2str } from "./utils";
 
-import { TimeLogSession, sessionHub, PredefinedActives, activeHub } from "./actives";
+import { TimeLogSession, sessionHub, PredefinedActives, activeHub, timeLogManager } from "./actives";
 
 const DATA_TIME_LOGGER = "time-log.json";
 const DATA_ACTIVES = "actives.json";
@@ -36,26 +37,26 @@ export default class PluginSample extends Plugin {
 
         setEventBus(this.eventBus);
 
-        const topBarElement = this.addTopBar({
-            icon: "iconFace",
-            title: this.i18n.addTopBarIcon,
-            position: "right",
-            callback: () => {
-                if (this.isMobile) {
-                    this.addMenu();
-                } else {
-                    let rect = topBarElement.getBoundingClientRect();
-                    // 如果被隐藏，则使用更多按钮
-                    if (rect.width === 0) {
-                        rect = document.querySelector("#barMore").getBoundingClientRect();
-                    }
-                    if (rect.width === 0) {
-                        rect = document.querySelector("#barPlugins").getBoundingClientRect();
-                    }
-                    this.addMenu(rect);
-                }
-            }
-        });
+        // const topBarElement = this.addTopBar({
+        //     icon: "iconFace",
+        //     title: this.i18n.addTopBarIcon,
+        //     position: "right",
+        //     callback: () => {
+        //         if (this.isMobile) {
+        //             this.addMenu();
+        //         } else {
+        //             let rect = topBarElement.getBoundingClientRect();
+        //             // 如果被隐藏，则使用更多按钮
+        //             if (rect.width === 0) {
+        //                 rect = document.querySelector("#barMore").getBoundingClientRect();
+        //             }
+        //             if (rect.width === 0) {
+        //                 rect = document.querySelector("#barPlugins").getBoundingClientRect();
+        //             }
+        //             this.addMenu(rect);
+        //         }
+        //     }
+        // });
 
         this.addDock({
             config: {
@@ -89,9 +90,11 @@ export default class PluginSample extends Plugin {
             if (timelog.elapsed == 0) {
                 return;
             }
-            showMessage(`活动结束, 共 ${time2str(timelog.elapsed / 1000)}`);
-            this.data[DATA_TIME_LOGGER].push(timelog);
-            this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
+            showMessage(`活动 ${session.active.title} 结束, 用时 ${time2str(timelog.elapsed / 1000)}`);
+            // this.data[DATA_TIME_LOGGER].push(timelog);
+            // this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
+            timeLogManager.add(timelog);
+            timeLogManager.save();
         });
 
         const del = (event: CustomEvent<TimeLogSession>) => {
@@ -132,9 +135,21 @@ export default class PluginSample extends Plugin {
             }
         });
 
+        eventBus.on("open-log-history", () => {
+            const dialog = new Dialog({
+                title: "记录",
+                content: `<div id="LogHistory" style="height: 100%;"/>`,
+                width: "500px",
+                height: "500px"
+            });
+            let ele = dialog.element.querySelector('#LogHistory');
+            new HistoryTimelog({
+                target: ele,
+            });
+        });
+
         // set default storage
-        let data_time_logger = await this.loadData(DATA_TIME_LOGGER);
-        this.data[DATA_TIME_LOGGER] = data_time_logger || [];
+        await timeLogManager.init(this);
 
         let data_actives = await this.loadData(DATA_ACTIVES);
         this.data[DATA_ACTIVES] = data_actives || PredefinedActives;

@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/types/index.d.ts
- * @LastEditTime : 2023-08-22 17:56:33
+ * @LastEditTime : 2023-08-27 13:51:56
  * @Description  : 
  */
 
@@ -94,7 +94,8 @@ type TEvents = TEventBus
                 | "open-settings"
                 | "load-data"
                 | "save-data"
-                | "on-active-updated";
+                | "on-active-updated"
+                | "open-log-history";
 
 interface IEventBus {
     on(type: TEvents, listener: (event: CustomEvent<any>) => void): void;

@@ -3,11 +3,11 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-21 18:58:55
  * @FilePath     : /src/actives/type.d.ts
- * @LastEditTime : 2023-08-23 23:52:54
+ * @LastEditTime : 2023-08-27 12:10:29
  * @Description  : 
  */
 interface IActive {
-    id?: string;
+    id: string;
     emoji: {
         type: string;
         code: string;
@@ -32,4 +32,9 @@ interface ITimeLog {
     elapsed: number;  // 有效的记录, 不算暂停时间, 所以可能会小于 end - beg
     procedure: IInterval[];
     memo: string;
+}
+
+interface IDateLog {
+    date: Date;
+    timeLogs: ITimeLog[];
 }

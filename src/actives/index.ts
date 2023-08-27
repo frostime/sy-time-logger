@@ -1,4 +1,5 @@
-import { eventBus } from "@/utils";
+import { eventBus, time2datestr } from "@/utils";
+import { Plugin } from "siyuan";
 
 class Active implements IActive {
 
@@ -275,3 +276,105 @@ export class TimeLogSessionHub {
 }
 
 export let sessionHub = new TimeLogSessionHub();
+
+/**从远往前排序 */
+const compareTimelog = (a: ITimeLog, b: ITimeLog) => {
+    if (a.beg < b.beg) {
+        return 1;
+    } else if (a.beg > b.beg) {
+        return -1;
+    } else {
+        if (a.end < b.end) {
+            return 1;
+        } else if (a.end > b.end) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+};
+
+const DATA_TIME_LOGGER = "time-log.json";
+type TDateStr = string;
+export class TimeLogManager {
+    plugin: Plugin;
+    history: ITimeLog[];
+    dateLog: Map<TDateStr, ITimeLog[]>; // 以日期为 key 的日志, 方便查询
+
+    constructor() {
+        this.plugin = null;
+        this.history = [];
+        this.dateLog = new Map();
+    }
+
+    async init(plugin: Plugin) {
+        this.plugin = plugin;
+        plugin.data[DATA_TIME_LOGGER] = this.history;
+        let logHistory: ITimeLog[] = await plugin.loadData(DATA_TIME_LOGGER);
+        logHistory = logHistory || [];
+        for (let i = 0; i < logHistory.length; i++) {
+            this.add(logHistory[i]);
+        }
+    }
+
+    add(timelog: ITimeLog) {
+        this.history.push(timelog);
+        let begDate = time2datestr(timelog.beg);
+        let dateLog = this.dateLog.get(begDate);
+        if (!dateLog) {
+            dateLog = [];
+            this.dateLog.set(begDate, dateLog);
+        }
+        dateLog.push(timelog);
+    }
+
+    find(timelog: ITimeLog) {
+        let index = this.history.findIndex(item => {
+            return item.beg === timelog.beg && item.active.id === timelog.active.id;
+        });
+        return index;
+    }
+
+    save() {
+        this.plugin.saveData(DATA_TIME_LOGGER, this.history);
+    }
+
+    allLogs(): IDateLog[] {
+        let dateRange = Array.from(this.dateLog.keys());
+        dateRange = dateRange.sort();
+        let dateLogs: IDateLog[] = [];
+        dateRange.forEach(datestr => {
+            let timeLogs = this.dateLog.get(datestr);
+            timeLogs = timeLogs.sort(compareTimelog);
+            let date = new Date(datestr);
+            date.setHours(0, 0, 0, 0);
+            dateLogs.push({
+                date: new Date(date),
+                timeLogs: timeLogs,
+            });
+        });
+        return dateLogs;
+    }
+
+    queryLogs(startDate?: Date, endDate?: Date): IDateLog[] {
+        let start = startDate ? startDate.getTime() : new Date().setHours(0, 0, 0, 0);
+        let end = endDate ? endDate.getTime() : new Date().setHours(23, 59, 59, 999);
+        let startStr = time2datestr(start);
+        let endStr = time2datestr(end);
+        let allDate = Array.from(this.dateLog.keys());
+        let dateRange = allDate.filter(date => date >= startStr && date <= endStr);
+        dateRange = dateRange.sort();
+        let dateLogs: IDateLog[] = [];
+        dateRange.forEach(date => {
+            let timeLogs = this.dateLog.get(date);
+            timeLogs = timeLogs.sort(compareTimelog);
+            dateLogs.push({
+                date: new Date(date),
+                timeLogs: timeLogs,
+            });
+        });
+        return dateLogs;
+    }
+}
+
+export let timeLogManager = new TimeLogManager();
