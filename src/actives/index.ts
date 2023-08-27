@@ -341,11 +341,15 @@ export class TimeLogManager {
 
     allLogs(): IDateLog[] {
         let dateRange = Array.from(this.dateLog.keys());
-        dateRange = dateRange.sort();
+        dateRange = dateRange.sort((a, b) => a > b ? -1 : a < b ? 1 : 0);
         let dateLogs: IDateLog[] = [];
         dateRange.forEach(datestr => {
             let timeLogs = this.dateLog.get(datestr);
             timeLogs = timeLogs.sort(compareTimelog);
+            timeLogs.forEach(timelog => {
+                timelog.procedure = timelog.procedure.sort((a, b) => a.beg > b.beg ? -1 : a.beg < b.beg ? 1 : 0);
+            });
+
             let date = new Date(datestr);
             date.setHours(0, 0, 0, 0);
             dateLogs.push({
@@ -363,11 +367,14 @@ export class TimeLogManager {
         let endStr = time2datestr(end);
         let allDate = Array.from(this.dateLog.keys());
         let dateRange = allDate.filter(date => date >= startStr && date <= endStr);
-        dateRange = dateRange.sort();
+        dateRange = dateRange.sort((a, b) => a > b ? -1 : a < b ? 1 : 0);
         let dateLogs: IDateLog[] = [];
         dateRange.forEach(date => {
             let timeLogs = this.dateLog.get(date);
             timeLogs = timeLogs.sort(compareTimelog);
+            timeLogs.forEach(timelog => {
+                timelog.procedure = timelog.procedure.sort((a, b) => a.beg > b.beg ? -1 : a.beg < b.beg ? 1 : 0);
+            });
             dateLogs.push({
                 date: new Date(date),
                 timeLogs: timeLogs,
