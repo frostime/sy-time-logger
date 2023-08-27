@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 15:16:17
  FilePath     : /src/components/dashboard/timelog-item.svelte
- LastEditTime : 2023-08-27 14:35:12
+ LastEditTime : 2023-08-27 14:44:36
  Description  : 
 -->
 <script lang="ts">
@@ -85,7 +85,7 @@
                 // color: var(--b3-protyle-inline-em-color);
             }
 
-            .running-memo {
+            .timelog-memo {
                 flex: 0;
                 margin: 0;
                 padding: 0;
