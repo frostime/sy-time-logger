@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-08-27 14:56:19
+ LastEditTime : 2023-08-27 14:57:46
  Description  : 
 -->
 <script lang="ts">
@@ -13,19 +13,21 @@
 
     export let dateLogs: IDateLog[] = timeLogManager.allLogs();
     console.log(dateLogs);
-    let cnt = 0;
+    let dateLogCnt = [];
     dateLogs.forEach((dateLog) => {
+        let cnt = 0;
         dateLog.timeLogs.forEach((timelog) => {
             cnt += timelog.procedure.length;
         });
+        dateLogCnt.push(cnt);
     });
 </script>
 
 <section>
-    {#each dateLogs as dateLog (dateLog.date)}
+    {#each dateLogs as dateLog , i (dateLog.date)}
         <div class="log-date">
             <span class="log-date-str">{date2str(dateLog.date)}</span>
-            <span class="counter b3-tooltips b3-tooltips__s" aria-label="记录数">{cnt}</span>
+            <span class="counter b3-tooltips b3-tooltips__s" aria-label="记录数">{dateLogCnt[i]}</span>
         </div>
         {#each dateLog.timeLogs as timelog (timelog.beg)}
             {#each timelog.procedure as interval (interval.beg)}
@@ -41,6 +43,7 @@
         font-size: 20px;
         border-bottom: 2px solid var(--b3-border-color);
         padding-bottom: 5px;
+        position: relative;
 
         >span.log-date-str {
             padding: 5px 20px;
