@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-27 12:03:46
+ * @LastEditTime : 2023-08-27 13:52:26
  * @Description  : 
  */
 import {
@@ -36,26 +36,26 @@ export default class PluginSample extends Plugin {
 
         setEventBus(this.eventBus);
 
-        const topBarElement = this.addTopBar({
-            icon: "iconFace",
-            title: this.i18n.addTopBarIcon,
-            position: "right",
-            callback: () => {
-                if (this.isMobile) {
-                    this.addMenu();
-                } else {
-                    let rect = topBarElement.getBoundingClientRect();
-                    // 如果被隐藏，则使用更多按钮
-                    if (rect.width === 0) {
-                        rect = document.querySelector("#barMore").getBoundingClientRect();
-                    }
-                    if (rect.width === 0) {
-                        rect = document.querySelector("#barPlugins").getBoundingClientRect();
-                    }
-                    this.addMenu(rect);
-                }
-            }
-        });
+        // const topBarElement = this.addTopBar({
+        //     icon: "iconFace",
+        //     title: this.i18n.addTopBarIcon,
+        //     position: "right",
+        //     callback: () => {
+        //         if (this.isMobile) {
+        //             this.addMenu();
+        //         } else {
+        //             let rect = topBarElement.getBoundingClientRect();
+        //             // 如果被隐藏，则使用更多按钮
+        //             if (rect.width === 0) {
+        //                 rect = document.querySelector("#barMore").getBoundingClientRect();
+        //             }
+        //             if (rect.width === 0) {
+        //                 rect = document.querySelector("#barPlugins").getBoundingClientRect();
+        //             }
+        //             this.addMenu(rect);
+        //         }
+        //     }
+        // });
 
         this.addDock({
             config: {

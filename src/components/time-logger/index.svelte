@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-25 14:22:39
+ LastEditTime : 2023-08-27 13:51:22
  Description  : 
 -->
 <script lang="ts">
@@ -75,6 +75,19 @@
         >
             <svg class=""><use xlink:href="#iconSettings" /></svg>
         </span>
+        <span class="fn__space" />
+        <span
+            on:click={() => {
+                eventBus.emit("open-history");
+            }}
+            on:keydown={doNothing}
+            class="block__icon b3-tooltips b3-tooltips__sw"
+            aria-label="记录"
+        >
+            <svg><use xlink:href="#iconAlignCenter"></use></svg>
+        </span>
+        <span class="fn__space" />
+        <span data-type="min" class="block__icon b3-tooltips b3-tooltips__sw" aria-label="最小化 Ctrl+W"><svg><use xlink:href="#iconMin"></use></svg></span>
     </div>
 
     <section id="running-action-list">

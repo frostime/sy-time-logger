@@ -337,7 +337,22 @@ export class TimeLogManager {
         this.plugin.saveData(DATA_TIME_LOGGER, this.history);
     }
 
-    query(startDate?: Date, endDate?: Date) {
+    allLogs(): IDateLog[] {
+        let dateRange = Array.from(this.dateLog.keys());
+        dateRange = dateRange.sort();
+        let dateLogs: IDateLog[] = [];
+        dateRange.forEach(date => {
+            let timeLogs = this.dateLog.get(date);
+            timeLogs = timeLogs.sort(compareTimelog);
+            dateLogs.push({
+                date: new Date(date),
+                timeLogs: timeLogs,
+            });
+        });
+        return dateLogs;
+    }
+
+    queryLogs(startDate?: Date, endDate?: Date): IDateLog[] {
         let start = startDate ? startDate.getTime() : new Date().setHours(0, 0, 0, 0);
         let end = endDate ? endDate.getTime() : new Date().setHours(23, 59, 59, 999);
         let startStr = time2datestr(start);
@@ -345,10 +360,16 @@ export class TimeLogManager {
         let allDate = Array.from(this.dateLog.keys());
         let dateRange = allDate.filter(date => date >= startStr && date <= endStr);
         dateRange = dateRange.sort();
-        let result: ITimeLog[] = [];
+        let dateLogs: IDateLog[] = [];
         dateRange.forEach(date => {
-            result = result.concat(this.dateLog.get(date));
+            let timeLogs = this.dateLog.get(date);
+            timeLogs = timeLogs.sort(compareTimelog);
+            dateLogs.push({
+                date: new Date(date),
+                timeLogs: timeLogs,
+            });
         });
+        return dateLogs;
     }
 }
 
