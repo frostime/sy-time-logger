@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-08-27 14:57:46
+ LastEditTime : 2023-08-27 15:06:35
  Description  : 
 -->
 <script lang="ts">
@@ -27,7 +27,7 @@
     {#each dateLogs as dateLog , i (dateLog.date)}
         <div class="log-date">
             <span class="log-date-str">{date2str(dateLog.date)}</span>
-            <span class="counter b3-tooltips b3-tooltips__s" aria-label="记录数">{dateLogCnt[i]}</span>
+            <span class="counter b3-tooltips b3-tooltips__sw" aria-label="记录数">{dateLogCnt[i]}</span>
         </div>
         {#each dateLog.timeLogs as timelog (timelog.beg)}
             {#each timelog.procedure as interval (interval.beg)}

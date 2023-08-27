@@ -61,7 +61,6 @@
 
         // border-top: 1px solid var(--b3-border-color);
         border-bottom: 1px solid var(--b3-border-color);
-        margin-bottom: 10px;
         padding-top: 10px;
         padding-bottom: 10px;
 
