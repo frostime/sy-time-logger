@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-25 14:58:14
+ * @LastEditTime : 2023-08-27 12:03:46
  * @Description  : 
  */
 import {
@@ -20,7 +20,7 @@ import ActiveConfig from "./components/active-config.svelte";
 
 import { eventBus, setEventBus, time2str } from "./utils";
 
-import { TimeLogSession, sessionHub, PredefinedActives, activeHub } from "./actives";
+import { TimeLogSession, sessionHub, PredefinedActives, activeHub, timeLogManager } from "./actives";
 
 const DATA_TIME_LOGGER = "time-log.json";
 const DATA_ACTIVES = "actives.json";
@@ -90,8 +90,10 @@ export default class PluginSample extends Plugin {
                 return;
             }
             showMessage(`活动 ${session.active.title} 结束, 用时 ${time2str(timelog.elapsed / 1000)}`);
-            this.data[DATA_TIME_LOGGER].push(timelog);
-            this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
+            // this.data[DATA_TIME_LOGGER].push(timelog);
+            // this.saveData(DATA_TIME_LOGGER, this.data[DATA_TIME_LOGGER]);
+            timeLogManager.add(timelog);
+            timeLogManager.save();
         });
 
         const del = (event: CustomEvent<TimeLogSession>) => {
@@ -133,8 +135,7 @@ export default class PluginSample extends Plugin {
         });
 
         // set default storage
-        let data_time_logger = await this.loadData(DATA_TIME_LOGGER);
-        this.data[DATA_TIME_LOGGER] = data_time_logger || [];
+        await timeLogManager.init(this);
 
         let data_actives = await this.loadData(DATA_ACTIVES);
         this.data[DATA_ACTIVES] = data_actives || PredefinedActives;

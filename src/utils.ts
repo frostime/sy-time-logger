@@ -1,6 +1,19 @@
+/*
+ * Copyright (c) 2023 by Yp Z (frostime). All Rights Reserved.
+ * @Author       : Yp Z
+ * @Date         : 2023-08-22 14:45:10
+ * @FilePath     : /src/utils.ts
+ * @LastEditTime : 2023-08-27 11:43:14
+ * @Description  : 
+ */
 import type { IEventBus } from "./types/index.d.ts";
 import { confirm, Dialog } from "siyuan";
 
+/**
+ * 将 timestamp 转换为 HH:mm:ss 格式 的字符串
+ * @param time timestamp
+ * @returns string, HH:mm:ss
+ */
 export function time2str(time: number) {
     // console.log(time);
     time = Math.round(time);
@@ -12,6 +25,27 @@ export function time2str(time: number) {
     timeArr.push(minute.toString().padStart(2, "0"));
     timeArr.push(second.toString().padStart(2, "0"));
     return timeArr.join(":");
+}
+
+/**
+ * 将 Date 转换为 yyyy-MM-dd 格式 的字符串
+ * @param date , Date
+ * @returns str, yyyy-MM-dd
+ */
+export function date2str(date: Date) {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+}
+
+/**
+ * 将 timestamp 转换为 yyyy-MM-dd 格式 的字符串
+ * @param time 
+ * @returns 
+ */
+export function time2datestr(time: number) {
+    return date2str(new Date(time));
 }
 
 export let eventBus: IEventBus;
