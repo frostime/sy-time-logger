@@ -296,55 +296,58 @@ const compareTimelog = (a: ITimeLog, b: ITimeLog) => {
 
 const DATA_TIME_LOGGER = "time-log.json";
 type TDateStr = string;
+interface ILogHistory {
+    [key: TDateStr]: ITimeLog[];
+}
+
 export class TimeLogManager {
     plugin: Plugin;
-    history: ITimeLog[];
-    dateLog: Map<TDateStr, ITimeLog[]>; // 以日期为 key 的日志, 方便查询
+    logHistory: Map<TDateStr, ITimeLog[]>; // 以日期为 key 的日志, 方便查询
 
     constructor() {
         this.plugin = null;
-        this.history = [];
-        this.dateLog = new Map();
+        this.logHistory = new Map();
     }
 
     async init(plugin: Plugin) {
         this.plugin = plugin;
-        plugin.data[DATA_TIME_LOGGER] = this.history;
-        let logHistory: ITimeLog[] = await plugin.loadData(DATA_TIME_LOGGER);
-        logHistory = logHistory || [];
-        for (let i = 0; i < logHistory.length; i++) {
-            this.add(logHistory[i]);
+        // plugin.data[DATA_TIME_LOGGER] = this.history;
+
+
+        let record: ITimeLog[] | ILogHistory = await plugin.loadData(DATA_TIME_LOGGER);
+        //if is ITimelog[]
+        if (Array.isArray(record)) {
+            console.log("Got old style history storage, converting...")
+            for (let i = 0; i < record.length; i++) {
+                this.add(record[i]);
+            }
+        } else {
+            for (let datestr in record) {
+                this.logHistory.set(datestr, record[datestr]);
+            }
         }
     }
 
     add(timelog: ITimeLog) {
-        this.history.push(timelog);
         let begDate = time2datestr(timelog.beg);
-        let dateLog = this.dateLog.get(begDate);
+        let dateLog = this.logHistory.get(begDate);
         if (!dateLog) {
             dateLog = [];
-            this.dateLog.set(begDate, dateLog);
+            this.logHistory.set(begDate, dateLog);
         }
         dateLog.push(timelog);
     }
 
-    find(timelog: ITimeLog) {
-        let index = this.history.findIndex(item => {
-            return item.beg === timelog.beg && item.active.id === timelog.active.id;
-        });
-        return index;
-    }
-
     save() {
-        this.plugin.saveData(DATA_TIME_LOGGER, this.history);
+        this.plugin.saveData(DATA_TIME_LOGGER, Object.fromEntries(this.logHistory.entries()));
     }
 
     allLogs(): IDateLog[] {
-        let dateRange = Array.from(this.dateLog.keys());
+        let dateRange = Array.from(this.logHistory.keys());
         dateRange = dateRange.sort((a, b) => a > b ? -1 : a < b ? 1 : 0);
         let dateLogs: IDateLog[] = [];
         dateRange.forEach(datestr => {
-            let timeLogs = this.dateLog.get(datestr);
+            let timeLogs = this.logHistory.get(datestr);
             timeLogs = timeLogs.sort(compareTimelog);
             timeLogs.forEach(timelog => {
                 timelog.procedure = timelog.procedure.sort((a, b) => a.beg > b.beg ? -1 : a.beg < b.beg ? 1 : 0);
@@ -365,12 +368,12 @@ export class TimeLogManager {
         let end = endDate ? endDate.getTime() : new Date().setHours(23, 59, 59, 999);
         let startStr = time2datestr(start);
         let endStr = time2datestr(end);
-        let allDate = Array.from(this.dateLog.keys());
+        let allDate = Array.from(this.logHistory.keys());
         let dateRange = allDate.filter(date => date >= startStr && date <= endStr);
         dateRange = dateRange.sort((a, b) => a > b ? -1 : a < b ? 1 : 0);
         let dateLogs: IDateLog[] = [];
         dateRange.forEach(date => {
-            let timeLogs = this.dateLog.get(date);
+            let timeLogs = this.logHistory.get(date);
             timeLogs = timeLogs.sort(compareTimelog);
             timeLogs.forEach(timelog => {
                 timelog.procedure = timelog.procedure.sort((a, b) => a.beg > b.beg ? -1 : a.beg < b.beg ? 1 : 0);

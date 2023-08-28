@@ -21,7 +21,7 @@ import HistoryTimelog from "./components/dashboard/history-timelog.svelte";
 
 import { eventBus, setEventBus, time2str } from "./utils";
 
-import { TimeLogSession, sessionHub, PredefinedActives, activeHub, timeLogManager } from "./actives";
+import { TimeLogSession, sessionHub, PredefinedActives, activeHub, timeLogManager } from "@/core";
 
 const DATA_TIME_LOGGER = "time-log.json";
 const DATA_ACTIVES = "actives.json";
