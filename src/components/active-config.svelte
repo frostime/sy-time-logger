@@ -14,7 +14,7 @@
     import AllActivesGrid from "./time-logger/all-actives-grid.svelte";
     import { chooseIcon } from "@/components";
 
-    import { activeHub } from "@/actives";
+    import { activeHub } from "@/core";
     import { eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 

@@ -9,7 +9,7 @@
 <script lang="ts">
     import Active from "@/components/time-logger/active.svelte";
     import { time2str } from "@/utils";
-    import { activeHub } from "@/actives";
+    import { activeHub } from "@/core";
 
     export let interval: IInterval;
     export let log: ITimeLog;

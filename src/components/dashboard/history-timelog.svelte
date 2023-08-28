@@ -8,7 +8,7 @@
 -->
 <script lang="ts">
     import TimelogItem from "./timelog-item.svelte";
-    import { timeLogManager } from "@/actives";
+    import { timeLogManager } from "@/core";
     import { date2str } from "@/utils";
 
     export let dateLogs: IDateLog[] = timeLogManager.allLogs();

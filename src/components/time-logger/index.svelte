@@ -10,11 +10,11 @@
     import { onDestroy, onMount } from 'svelte';
     import AllActivesGrid from './all-actives-grid.svelte';
     import LoggingActive from './logging-active.svelte';
-    import { TimeLogSession, sessionHub } from "@/actives";
+    import { TimeLogSession, sessionHub } from "@/core";
 
     import { eventBus } from "@/utils";
 
-    import { activeHub } from "@/actives";
+    import { activeHub } from "@/core";
 
     let rootActive: IActive = null;
     let currentActives: IActive[] = activeHub.getActives(rootActive);
