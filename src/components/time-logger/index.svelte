@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-27 13:57:12
+ LastEditTime : 2023-08-29 14:29:01
  Description  : 
 -->
 <script lang="ts">
@@ -47,6 +47,10 @@
 
 
     const onclick = (e: CustomEvent<IActive>) => {
+        let active = e.detail;
+        if (active.isGroup) {
+            return;
+        }
         let session = sessionHub.new(e.detail);
         runningSession = [...runningSession, session];
     }

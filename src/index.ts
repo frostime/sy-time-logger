@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-29 13:50:12
+ * @LastEditTime : 2023-08-29 14:30:15
  * @Description  : 
  */
 import {
@@ -125,6 +125,7 @@ export default class PluginSample extends Plugin {
             let active = e.detail;
             this.data[DATA_ACTIVES] = activeHub.dump();
             this.saveData(DATA_ACTIVES, this.data[DATA_ACTIVES]);
+            console.log("on-active-updated", this.data[DATA_ACTIVES]);
 
             if (!active) return;
             //更新正在运行的session 的 Active 信息

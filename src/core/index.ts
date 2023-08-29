@@ -75,9 +75,14 @@ export class ActiveHub {
     }
 
     dump(): IActive[] {
+        let allGroups = Array.from(this.group2Actives.keys());
+        allGroups = allGroups.sort((a, b) => a > b ? 1 : a < b ? -1 : 0);
         let actives: IActive[] = [];
-        this.id2Actives.forEach(active => {
-            actives.push(active.dump());
+        allGroups.forEach(group => {
+            let groupActives = this.group2Actives.get(group);
+            groupActives.forEach(active => {
+                actives.push(active.dump());
+            });
         });
         return actives;
     }
