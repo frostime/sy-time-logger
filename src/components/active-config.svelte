@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-29 14:18:37
+ LastEditTime : 2023-08-29 15:15:53
  Description  : 
 -->
 <script lang="ts">
@@ -49,6 +49,7 @@
         e.preventDefault();
         console.log("select active", e.detail);
         focusedActive = e.detail;
+        console.log("focusedActive", focusedActive);
         e.stopPropagation();
     };
 
@@ -122,11 +123,24 @@
             out:fly={{ y: 200, duration: 100 }}
             in:fly={{ y: 200, duration: 100 }}
         >
-            <div style="display: flex; padding: 16px 24px;">
+            <div style="display: flex; padding: 16px 24px; gap: 25px;">
                 <div class="b3-label__text fn__flex-1">
                     {focusedActive.id ?? "新建项目"}
                 </div>
                 {#if focusedActive.id}
+                    <div
+                        class="b3-tooltips b3-tooltips__s"
+                        style="{focusedActive.isGroup === true ? 'display: none' : ''}"
+                        aria-label="加入群组"
+                        on:click={() => {}}
+                        on:keypress={() => {}}
+                    >
+                        <svg
+                            style="width: 20px; height: 20px; color: var(--b3-theme-error);"
+                        >
+                            <use xlink:href="#iconMoveToGroup" />
+                        </svg>
+                    </div>
                     <div
                         class="b3-tooltips b3-tooltips__s"
                         aria-label="删除"
