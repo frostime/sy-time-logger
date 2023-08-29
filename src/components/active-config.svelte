@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-25 14:50:19
+ LastEditTime : 2023-08-29 13:41:55
  Description  : 
 -->
 <script lang="ts">
@@ -20,8 +20,8 @@
 
     import { confirm } from "siyuan";
 
-    let rootActive: IActive = null;
-    let currentActives: IActive[] = activeHub.getActives(rootActive);
+    let group: TActiveGroupID = "";
+    let currentActives: IActive[] = activeHub.getGroupActives(group);
 
     let disablGroupConfig = true;
 
@@ -34,7 +34,7 @@
     });
 
     const updateActives = () => {
-        currentActives = activeHub.getActives(rootActive);
+        currentActives = activeHub.getGroupActives(group);
     };
 
     let rootStyles = getComputedStyle(document.documentElement);
@@ -79,13 +79,14 @@
             },
             title: "新建项目",
             isGroup: false,
+            id: undefined
         };
         disablGroupConfig = false;
     };
 
     const onsave = () => {
         console.log("save");
-        if (focusedActive.id) {
+        if (focusedActive.id !== undefined) {
             activeHub.update(focusedActive);
         } else {
             activeHub.add(focusedActive);
@@ -97,7 +98,7 @@
     const onreordered = (e: CustomEvent<IActive[]>) => {
         console.log("reordered", e.detail);
         // activeHub.updateActives(e.detail);
-        activeHub.setActives(e.detail, rootActive);
+        activeHub.setGroupActives(e.detail, group);
     };
 
 </script>

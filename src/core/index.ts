@@ -10,9 +10,7 @@ class Active implements IActive {
     };
     title: string;
     isGroup: boolean;
-
-    parent?: Active;
-    children?: Active[];
+    groupId: string;
 
     constructor(data: IActive) {
         let timedelta = Date.now() - 1672531200000;
@@ -20,13 +18,17 @@ class Active implements IActive {
         this.emoji = data.emoji;
         this.title = data.title;
         this.isGroup = data.isGroup ?? false;
-        this.parent = null;
-        this.children = [];
+        this.groupId = data.groupId ?? "";
     }
 
-    addChild(active: Active) {
-        this.children.push(active);
-        active.parent = this;
+    dump(): IActive {
+        return {
+            id: this.id,
+            emoji: this.emoji,
+            title: this.title,
+            isGroup: this.isGroup === true ? true : undefined,
+            groupId: this.groupId !== "" ? this.groupId : undefined,
+        }
     }
 }
 
@@ -60,79 +62,94 @@ export const PredefinedActives: IActive[] = [
     },
 ];
 
+
+const RootGroup = "";
 export class ActiveHub {
-    rootActives: Active[];
-    allActives: Map<string, Active>;
+    id2Actives: Map<string, Active>; // ActiveId -> Active
+    group2Actives: Map<string, Active[]>; // GroupId -> Actives, 默认的 root group 为 ""
 
     constructor() {
-        this.rootActives = [];
-        this.allActives = new Map();
+        this.id2Actives = new Map();
+        this.group2Actives = new Map();
+        this.group2Actives.set(RootGroup, []);
     }
 
-    getActives(root?: IActive) {
-        if (!root) {
-            return this.rootActives;
-        }
-        let active = this.allActives.get(root.id);
-        if (!active) {
-            return [];
-        }
-        return active.children;
+    dump(): IActive[] {
+        let actives: IActive[] = [];
+        this.id2Actives.forEach(active => {
+            actives.push(active.dump());
+        });
+        return actives;
     }
 
-    setActives(actives: IActive[] | Active[], root?: IActive) {
-        if (!root) {
-            this.rootActives = actives.map(active => active instanceof Active ? active : new Active(active));
-            eventBus.emit("on-active-updated");
-            return;
+    getGroupActives(group: TActiveGroupID = "") {
+        return this.group2Actives.get(group) ?? [];
+    }
+
+    setGroupActives(actives: IActive[] | Active[], group?: TActiveGroupID) {
+        if (!group) {
+            // this.rootActives = actives.map(active => active instanceof Active ? active : new Active(active));
+            group = RootGroup;
         }
-        let active = this.allActives.get(root.id);
-        if (!active) {
-            return;
-        }
-        active.children = actives.map(active => active instanceof Active ? active : new Active(active));
+        let activeList: Active[] = actives.map(active => active instanceof Active ? active : new Active(active));
+        this.group2Actives.set(group, activeList);
+        activeList.forEach(active => {
+            active.groupId = group;
+            this.id2Actives.set(active.id, active);
+        });
         eventBus.emit("on-active-updated");
     }
 
-    add(active: IActive | Active) {
+    add(active: IActive | Active, group?: TActiveGroupID) {
+        console.log("Add active", active);
         let item = active instanceof Active ? active : new Active(active);
-        this.rootActives.push(item);
-        this.allActives.set(item.id, item);
+
+        this.id2Actives.set(item.id, item);
+        group = group ?? RootGroup;
+        let groupActives = this.group2Actives.get(group);
+        if (!groupActives) {
+            groupActives = [];
+            this.group2Actives.set(group, groupActives);
+        }
+        groupActives.push(item);
+        item.groupId = group;
+
         eventBus.emit("on-active-updated");
         return true;
     }
 
     del(active: IActive) {
-        let item = this.allActives.get(active.id);
+        let item = this.id2Actives.get(active.id);
         if (!item) {
             console.error("Active not found", active);
             return false;
         }
-        if (item.parent) {
-            let index = item.parent.children.indexOf(item);
-            if (index >= 0) {
-                item.parent.children.splice(index, 1);
-            }
-        } else {
-            let index = this.rootActives.indexOf(item);
-            if (index >= 0) {
-                this.rootActives.splice(index, 1);
-            }
+        let groupActives = this.group2Actives.get(active.groupId);
+        if (!groupActives) {
+            console.error("Group not found", active);
+            return false;
         }
-        this.allActives.delete(active.id);
+        this.id2Actives.delete(active.id);
+        let index = groupActives.findIndex(item => item.id === active.id);
+        if (index < 0) {
+            console.error("Active not found in group", active);
+            return false;
+        }
+        groupActives.splice(index, 1);
         eventBus.emit("on-active-updated", item);
         return true;
     }
 
     update(active: IActive) {
-        let item = this.allActives.get(active.id);
+        let item = this.id2Actives.get(active.id);
         if (!item) {
             console.error("Active not found", active);
             return false;
         }
         item.emoji = active.emoji;
         item.title = active.title;
-        item.isGroup = active.isGroup;
+        item.isGroup = active.isGroup ?? false;
+        item.groupId = active.groupId ?? "";
 
         eventBus.emit("on-active-updated", item);
 

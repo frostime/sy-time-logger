@@ -15,7 +15,7 @@
     export let log: ITimeLog;
 
     let active = log.active;
-    let findResult = activeHub.allActives.get(active.id);
+    let findResult = activeHub.id2Actives.get(active.id);
     active = findResult ? findResult : active;
 
     const duration: number = interval.end - interval.beg; //mili-seconds

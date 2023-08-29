@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-27 16:30:14
+ * @LastEditTime : 2023-08-29 13:50:12
  * @Description  : 
  */
 import {
@@ -123,7 +123,7 @@ export default class PluginSample extends Plugin {
         });
         eventBus.on("on-active-updated", (e: CustomEvent<IActive>) => {
             let active = e.detail;
-            this.data[DATA_ACTIVES] = activeHub.rootActives;
+            this.data[DATA_ACTIVES] = activeHub.dump();
             this.saveData(DATA_ACTIVES, this.data[DATA_ACTIVES]);
 
             if (!active) return;

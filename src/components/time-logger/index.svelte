@@ -16,11 +16,12 @@
 
     import { activeHub } from "@/core";
 
-    let rootActive: IActive = null;
-    let currentActives: IActive[] = activeHub.getActives(rootActive);
+    // let rootActive: IActive = null;
+    let group: TActiveGroupID = "";
+    let currentActives: IActive[] = activeHub.getGroupActives(group);
 
     const updateActives = () => {
-        currentActives = activeHub.getActives(rootActive);
+        currentActives = activeHub.getGroupActives(group);
     };
 
     const doNothing = () => {};
