@@ -82,6 +82,10 @@ export class ActiveHub {
         return actives;
     }
 
+    groupActiveCount(group: TActiveGroupID = "") {
+        return this.group2Actives.get(group)?.length ?? 0;
+    }
+
     getGroupActives(group: TActiveGroupID = "") {
         return this.group2Actives.get(group) ?? [];
     }

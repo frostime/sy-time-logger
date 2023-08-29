@@ -3,24 +3,23 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-24 12:09:22
+ LastEditTime : 2023-08-29 14:27:36
  Description  : 单个活动项目
 -->
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import Emoji from "@/components/libs/emoji.svelte";
+    import { activeHub } from "@/core";
 
     export let size: { item: number; emoji: number; title: number; emojiFontsize?: number };
     export let active: IActive;
     export let showTitle: boolean = true;
     export let style: string = "";
-    // let emoji: { type: string; code: string };
-    // let title: string;
 
     let height = active.title ? size.emoji + size.title + 6 : size.emoji;
 
-    let subActiveCnt = 0;
-    let styleDisplayCnt = subActiveCnt == 0 ? "display: none;" : "";
+    let styleDisplayCnt = active.isGroup === true ? "" : "display: none;";
+    let subActiveCnt = styleDisplayCnt? activeHub.groupActiveCount(active.groupId) : 0;
 
 
     const dispatch = createEventDispatcher();
