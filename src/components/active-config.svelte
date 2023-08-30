@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-29 15:15:53
+ LastEditTime : 2023-08-30 19:47:13
  Description  : 
 -->
 <script lang="ts">
@@ -12,13 +12,14 @@
     // import Active from "./time-logger/active.svelte";
     import Emoji from "@/components/libs/emoji.svelte";
     import AllActivesGrid from "./time-logger/all-actives-grid.svelte";
+    import ActivesList from "./time-logger/actives-list.svelte";
     import { chooseIcon } from "@/components";
 
     import { activeHub } from "@/core";
     import { eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
-    import { confirm } from "siyuan";
+    import { confirm, Dialog } from "siyuan";
 
     let group: TActiveGroupID = "";
     let currentActives: IActive[] = activeHub.getGroupActives(group);
@@ -102,6 +103,34 @@
         activeHub.setGroupActives(e.detail, group);
     };
 
+    const onmovetogroup = (active: IActive) => {
+        console.log("move to group", active);
+        let groups: IActive[] = Array.from(activeHub.group2Actives.keys())
+                        .filter((id) => id !== group)
+                        .map((id) => activeHub.id2Actives.get(id));
+        let rootGroup: IActive = {
+            id: "",
+            title: "顶层",
+            emoji: {
+                type: "symbols",
+                code: "1f518",
+            }
+        };
+        groups = [rootGroup, ...groups];
+        let dialog = new Dialog({
+            title: "移动到群组",
+            content: "<div id='move-to-group' style=\"height: 100%;\"></div>",
+            width: "250px",
+            height: "350px",
+        })
+        new ActivesList({
+            target: dialog.element.querySelector("#move-to-group"),
+            props: {
+                actives: groups
+            }
+        })
+    };
+
 </script>
 
 <main>
@@ -132,7 +161,7 @@
                         class="b3-tooltips b3-tooltips__s"
                         style="{focusedActive.isGroup === true ? 'display: none' : ''}"
                         aria-label="加入群组"
-                        on:click={() => {}}
+                        on:click={() => {onmovetogroup(focusedActive)}}
                         on:keypress={() => {}}
                     >
                         <svg
