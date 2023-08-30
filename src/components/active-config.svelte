@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-30 19:47:13
+ LastEditTime : 2023-08-30 20:43:23
  Description  : 
 -->
 <script lang="ts">
@@ -16,7 +16,7 @@
     import { chooseIcon } from "@/components";
 
     import { activeHub } from "@/core";
-    import { eventBus } from "@/utils";
+    import { confirmDialog, eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
     import { confirm, Dialog } from "siyuan";
@@ -117,18 +117,32 @@
             }
         };
         groups = [rootGroup, ...groups];
-        let dialog = new Dialog({
-            title: "移动到群组",
-            content: "<div id='move-to-group' style=\"height: 100%;\"></div>",
-            width: "250px",
-            height: "350px",
-        })
-        new ActivesList({
-            target: dialog.element.querySelector("#move-to-group"),
+        // let dialog = new Dialog({
+        //     title: "移动到群组",
+        //     content: "<div id='move-to-group' style=\"height: 100%;\"></div>",
+        //     width: "250px",
+        //     height: "350px",
+        // });
+        let selectedActive: IActive;
+        let dialog: Dialog = confirmDialog(
+            "移动到群组",
+            "<div id='move-to-group' style=\"height: 100%;\"></div>",
+            () => {
+                console.log("selectedActive", selectedActive);
+            }
+        );
+        let container = dialog.element.querySelector(".b3-dialog__container") as HTMLElement;
+        container.style.maxHeight = "400px";
+        let ele = dialog.element.querySelector("#move-to-group") as HTMLElement;
+        let activeList = new ActivesList({
+            target: ele,
             props: {
                 actives: groups
             }
-        })
+        });
+        activeList.$on("click", (e: CustomEvent<IActive>) => {
+            selectedActive = e.detail;
+        });
     };
 
 </script>

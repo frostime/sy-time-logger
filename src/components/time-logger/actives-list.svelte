@@ -3,11 +3,11 @@
  Author       : Yp Z
  Date         : 2023-08-22 14:45:10
  FilePath     : /src/components/time-logger/actives-list.svelte
- LastEditTime : 2023-08-30 20:09:45
+ LastEditTime : 2023-08-30 20:43:36
  Description  : 
 -->
 <script lang="ts">
-    // import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher } from "svelte";
     // import Active from "./active.svelte";
     import Emoji from "@/components/libs/emoji.svelte";
 
@@ -15,7 +15,7 @@
 
     let choosenIndex: number = -1;
 
-    // const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher();
 
 </script>
 
@@ -27,7 +27,7 @@
         <div class="actives-list-item {choosenIndex === i ? "choosen-item" : ""}" data-index={i}
             on:click={() => {
                 choosenIndex = choosenIndex === i ? -1 : i;
-                // dispatch("click", active);
+                dispatch("click", choosenIndex === i ? active : undefined);
             }}
             on:keypress={() => {}}
         >
@@ -44,6 +44,9 @@
         display: flex;
         flex-direction: column;
         height: 100%;
+        &>.actives-list-item:last-child:not(:hover):not(.choosen-item) {
+            border-bottom: none;
+        }
     }
 
     .actives-list-item {
