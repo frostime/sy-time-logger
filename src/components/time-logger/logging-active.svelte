@@ -3,7 +3,7 @@
 
     import { time2str } from "@/utils";
     import Active from "./active.svelte";
-    import { TimeLogSession } from "@/actives";
+    import { TimeLogSession } from "@/core";
 
     import { eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";

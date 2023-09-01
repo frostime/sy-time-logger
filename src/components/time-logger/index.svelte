@@ -3,24 +3,25 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-27 13:57:12
+ LastEditTime : 2023-08-29 14:29:01
  Description  : 
 -->
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
     import AllActivesGrid from './all-actives-grid.svelte';
     import LoggingActive from './logging-active.svelte';
-    import { TimeLogSession, sessionHub } from "@/actives";
+    import { TimeLogSession, sessionHub } from "@/core";
 
     import { eventBus } from "@/utils";
 
-    import { activeHub } from "@/actives";
+    import { activeHub } from "@/core";
 
-    let rootActive: IActive = null;
-    let currentActives: IActive[] = activeHub.getActives(rootActive);
+    // let rootActive: IActive = null;
+    let group: TActiveGroupID = "";
+    let currentActives: IActive[] = activeHub.getGroupActives(group);
 
     const updateActives = () => {
-        currentActives = activeHub.getActives(rootActive);
+        currentActives = activeHub.getGroupActives(group);
     };
 
     const doNothing = () => {};
@@ -46,6 +47,10 @@
 
 
     const onclick = (e: CustomEvent<IActive>) => {
+        let active = e.detail;
+        if (active.isGroup) {
+            return;
+        }
         let session = sessionHub.new(e.detail);
         runningSession = [...runningSession, session];
     }

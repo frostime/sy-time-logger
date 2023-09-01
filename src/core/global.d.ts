@@ -2,10 +2,11 @@
  * Copyright (c) 2023 by Yp Z (frostime). All Rights Reserved.
  * @Author       : Yp Z
  * @Date         : 2023-08-21 18:58:55
- * @FilePath     : /src/actives/type.d.ts
- * @LastEditTime : 2023-08-27 12:10:29
+ * @FilePath     : /src/core/global.d.ts
+ * @LastEditTime : 2023-08-28 22:31:39
  * @Description  : 
  */
+type TActiveID = string;
 interface IActive {
     id: string;
     emoji: {
@@ -13,8 +14,10 @@ interface IActive {
         code: string;
     };
     title: string;
-    isGroup: boolean;
+    isGroup?: boolean;
+    groupId?: TActiveGroupID;
 }
+type TActiveGroupID = "" | TActiveID;
 
 type TTimestamp = number;
 

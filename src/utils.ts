@@ -3,10 +3,10 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-22 14:45:10
  * @FilePath     : /src/utils.ts
- * @LastEditTime : 2023-08-27 11:43:14
+ * @LastEditTime : 2023-08-30 20:24:53
  * @Description  : 
  */
-import type { IEventBus } from "./types/index.d.ts";
+import type { IEventBus } from "./types/global.js";
 import { confirm, Dialog } from "siyuan";
 
 /**
@@ -75,4 +75,37 @@ export function inputDialog(title: string, text: string = "", placeholder?: stri
         );
     });
 }
+
+//@ts-ignore
+const siyuan = window.siyuan;
+
+
+export const confirmDialog = (title: string, text: string, confirm?: (ele?: HTMLElement) => void, cancel?: (ele?: HTMLElement) => void) => {
+    const dialog = new Dialog({
+        title,
+        content: `<div class="b3-dialog__content">
+    <div class="ft__breakword">${text}</div>
+</div>
+<div class="b3-dialog__action">
+    <button class="b3-button b3-button--cancel">${siyuan.languages.cancel}</button><div class="fn__space"></div>
+    <button class="b3-button b3-button--text" id="confirmDialogConfirmBtn">${siyuan.languages.confirm}</button>
+</div>`,
+        width: "520px",
+    });
+    const target: HTMLElement = dialog.element.querySelector(".b3-dialog__content>div.ft__breakword");
+    const btnsElement = dialog.element.querySelectorAll(".b3-button");
+    btnsElement[0].addEventListener("click", () => {
+        if (cancel) {
+            cancel(target);
+        }
+        dialog.destroy();
+    });
+    btnsElement[1].addEventListener("click", () => {
+        if (confirm) {
+            confirm(target);
+        }
+        dialog.destroy();
+    });
+    return dialog;
+};
 
