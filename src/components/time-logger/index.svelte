@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-29 14:29:01
+ LastEditTime : 2023-09-02 01:05:30
  Description  : 
 -->
 <script lang="ts">
@@ -17,11 +17,13 @@
     import { activeHub } from "@/core";
 
     // let rootActive: IActive = null;
-    let group: TActiveGroupID = "";
-    let currentActives: IActive[] = activeHub.getGroupActives(group);
+    let currentGroup: TActiveGroupID = "";
+    let currentActives: IActive[]  = activeHub.getGroupActives(currentGroup);
 
     const updateActives = () => {
-        currentActives = activeHub.getGroupActives(group);
+        console.log("on-active-updated", currentGroup);
+        currentActives = activeHub.getGroupActives(currentGroup);
+        console.log(currentActives);
     };
 
     const doNothing = () => {};
@@ -49,10 +51,15 @@
     const onclick = (e: CustomEvent<IActive>) => {
         let active = e.detail;
         if (active.isGroup) {
-            return;
+            // return;
+            currentGroup = active.id;
+            let actives = activeHub.getGroupActives(currentGroup);
+            // console.log(actives);
+            currentActives = [...actives];
+        } else {
+            let session = sessionHub.new(e.detail);
+            runningSession = [...runningSession, session];
         }
-        let session = sessionHub.new(e.detail);
-        runningSession = [...runningSession, session];
     }
 
     const removeActive = (e: CustomEvent<TimeLogSession>) => {

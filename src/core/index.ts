@@ -167,8 +167,27 @@ export class ActiveHub {
         item.emoji = active.emoji;
         item.title = active.title;
         item.isGroup = active.isGroup ?? false;
+        let oldGroupId = item.groupId;
         item.groupId = active.groupId ?? "";
 
+        if (oldGroupId !== item.groupId) {
+            let oldGroup = this.group2Actives.get(oldGroupId);
+            if (!oldGroup) {
+                return false;
+            }
+            let index = oldGroup.findIndex(item => item.id === active.id);
+            if (index < 0) {
+                return false;
+            }
+            oldGroup.splice(index, 1);
+            let newGroup = this.group2Actives.get(item.groupId);
+            if (!newGroup) {
+                this.group2Actives.set(item.groupId, [item]);
+            } else {
+                newGroup.push(item);
+            }
+        }
+        console.log("ActiveHub: Update active", item);
         eventBus.emit("on-active-updated", item);
 
         return true;

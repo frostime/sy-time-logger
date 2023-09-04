@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-30 20:43:23
+ LastEditTime : 2023-09-04 16:35:33
  Description  : 
 -->
 <script lang="ts">
@@ -103,8 +103,8 @@
         activeHub.setGroupActives(e.detail, group);
     };
 
-    const onmovetogroup = (active: IActive) => {
-        console.log("move to group", active);
+    const onmovetogroup = () => {
+        console.log("move to group", focusedActive);
         let groups: IActive[] = Array.from(activeHub.group2Actives.keys())
                         .filter((id) => id !== group)
                         .map((id) => activeHub.id2Actives.get(id));
@@ -129,6 +129,10 @@
             "<div id='move-to-group' style=\"height: 100%;\"></div>",
             () => {
                 console.log("selectedActive", selectedActive);
+                if (selectedActive?.isGroup === true && selectedActive?.id !== focusedActive.groupId) {
+                    focusedActive.isGroup = false;
+                    focusedActive.groupId = selectedActive.id;
+                }
             }
         );
         let container = dialog.element.querySelector(".b3-dialog__container") as HTMLElement;
@@ -167,15 +171,24 @@
             in:fly={{ y: 200, duration: 100 }}
         >
             <div style="display: flex; padding: 16px 24px; gap: 25px;">
-                <div class="b3-label__text fn__flex-1">
+                <div class="b3-label__text">
                     {focusedActive.id ?? "新建项目"}
                 </div>
+                <div class="b3-label__text">
+                    群组:
+                    {#if focusedActive?.groupId}
+                        {activeHub.id2Actives.get(focusedActive.groupId).title}
+                    {:else}
+                        无
+                    {/if}
+                </div>
+                <div class="fn__flex-1"></div>
                 {#if focusedActive.id}
                     <div
                         class="b3-tooltips b3-tooltips__s"
                         style="{focusedActive.isGroup === true ? 'display: none' : ''}"
                         aria-label="加入群组"
-                        on:click={() => {onmovetogroup(focusedActive)}}
+                        on:click={onmovetogroup}
                         on:keypress={() => {}}
                     >
                         <svg
