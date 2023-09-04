@@ -8,7 +8,7 @@
  */
 type TActiveID = string;
 interface IActive {
-    id: string;
+    id: TActiveID;
     emoji: {
         type: string;
         code: string;

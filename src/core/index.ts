@@ -65,8 +65,8 @@ export const PredefinedActives: IActive[] = [
 
 const RootGroup = "";
 export class ActiveHub {
-    id2Actives: Map<string, Active>; // ActiveId -> Active
-    group2Actives: Map<string, Active[]>; // GroupId -> Actives, 默认的 root group 为 ""
+    private id2Actives: Map<string, Active>; // ActiveId -> Active
+    private group2Actives: Map<string, Active[]>; // GroupId -> Actives, 默认的 root group 为 ""
 
     constructor() {
         this.id2Actives = new Map();
@@ -87,12 +87,26 @@ export class ActiveHub {
         return actives;
     }
 
+    get(activeId: string): IActive {
+        return this.id2Actives.get(activeId).dump();
+    }
+
+    allGroups(): IActive[] {
+        let allGroups = Array.from(this.group2Actives.keys());
+        allGroups.splice(allGroups.indexOf(RootGroup), 1);
+        return allGroups.map(group => this.id2Actives.get(group).dump());
+    }
+
     groupActiveCount(group: TActiveGroupID = "") {
         return this.group2Actives.get(group)?.length ?? 0;
     }
 
     getGroupActives(group: TActiveGroupID = "") {
-        return this.group2Actives.get(group) ?? [];
+        let actives = this.group2Actives.get(group);
+        if (!actives) {
+            return [];
+        }
+        return actives.map(active => active.dump());
     }
 
     setGroupActives(actives: IActive[] | Active[], group?: TActiveGroupID) {

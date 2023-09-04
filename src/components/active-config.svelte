@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-09-04 16:35:33
+ LastEditTime : 2023-09-04 17:07:35
  Description  : 
 -->
 <script lang="ts">
@@ -21,8 +21,8 @@
 
     import { confirm, Dialog } from "siyuan";
 
-    let group: TActiveGroupID = "";
-    let currentActives: IActive[] = activeHub.getGroupActives(group);
+    let currentGroup: TActiveGroupID = "";
+    let currentActives: IActive[] = activeHub.getGroupActives(currentGroup);
 
     let disablGroupConfig = true;
 
@@ -35,7 +35,7 @@
     });
 
     const updateActives = () => {
-        currentActives = activeHub.getGroupActives(group);
+        currentActives = activeHub.getGroupActives(currentGroup);
     };
 
     let rootStyles = getComputedStyle(document.documentElement);
@@ -100,14 +100,12 @@
     const onreordered = (e: CustomEvent<IActive[]>) => {
         console.log("reordered", e.detail);
         // activeHub.updateActives(e.detail);
-        activeHub.setGroupActives(e.detail, group);
+        activeHub.setGroupActives(e.detail, currentGroup);
     };
 
     const onmovetogroup = () => {
         console.log("move to group", focusedActive);
-        let groups: IActive[] = Array.from(activeHub.group2Actives.keys())
-                        .filter((id) => id !== group)
-                        .map((id) => activeHub.id2Actives.get(id));
+        let groups: IActive[] = activeHub.allGroups().filter((active) => active.id !== currentGroup);
         let rootGroup: IActive = {
             id: "",
             title: "顶层",
@@ -177,7 +175,7 @@
                 <div class="b3-label__text">
                     群组:
                     {#if focusedActive?.groupId}
-                        {activeHub.id2Actives.get(focusedActive.groupId).title}
+                        {activeHub.get(focusedActive.groupId).title}
                     {:else}
                         无
                     {/if}
