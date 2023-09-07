@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-08-29 15:02:56
+ * @LastEditTime : 2023-09-07 18:51:04
  * @Description  : 
  */
 import {
@@ -171,7 +171,7 @@ export default class PluginSample extends Plugin {
             title: "配置",
             content: `<div id="ActiveConfig" style="height: 100%;"/>`,
             width: "500px",
-            height: "500px"
+            height: "600px"
         });
         let ele = dialog.element.querySelector('#ActiveConfig');
         new ActiveConfig({

@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-09-07 18:32:36
+ LastEditTime : 2023-09-07 18:53:11
  Description  : 
 -->
 <script lang="ts">
@@ -136,7 +136,8 @@
             emoji: {
                 type: "symbols",
                 code: "1f518",
-            }
+            },
+            isGroup: true
         };
         groups = [rootGroup, ...groups];
         // let dialog = new Dialog({
