@@ -64,7 +64,22 @@ export const PredefinedActives: IActive[] = [
 
 
 const RootGroup = "";
+const BackActive: IActive = {
+    id: "#Active::GoBack",
+    title: "返回",
+    emoji: {
+        type: "#icon",
+        code: "#iconBack",
+    },
+    isGroup: false,
+};
+
 export class ActiveHub {
+    static RootGroup = "";
+    static SpecialActives = {
+        Back: BackActive
+    };
+
     private id2Actives: Map<string, Active>; // ActiveId -> Active
     private group2Actives: Map<string, Active[]>; // GroupId -> Actives, 默认的 root group 为 ""
 

@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-09-07 17:09:34
+ LastEditTime : 2023-09-07 17:27:43
  Description  : 
 -->
 <script lang="ts">
@@ -14,28 +14,18 @@
 
     import { eventBus } from "@/utils";
 
-    import { activeHub } from "@/core";
+    import { activeHub, ActiveHub } from "@/core";
 
     // let rootActive: IActive = null;
     let currentGroup: TActiveGroupID = "";
     let currentActives: IActive[];
-
-    const BackActive: IActive = {
-        id: "#DummyActive-GoBack",
-        title: "返回",
-        emoji: {
-            type: "#icon",
-            code: "#iconBack",
-        },
-        isGroup: false,
-    };
 
     const updateActives = () => {
         console.groupCollapsed("sy-time-logger: updateActives")
         console.log("Update Current Actives in group", currentGroup);
         currentActives = activeHub.getGroupActives(currentGroup);
         if (currentGroup !== "") {
-            currentActives = [BackActive, ...currentActives];
+            currentActives = [ActiveHub.SpecialActives.Back, ...currentActives];
         }
         console.log(currentActives);
         console.groupEnd();
@@ -67,11 +57,10 @@
     const onclick = (e: CustomEvent<IActive>) => {
         let active = e.detail;
         if (active.isGroup) {
-            // return;
             currentGroup = active.id;
             updateActives();
-        } else if (active.id === BackActive.id) {
-            currentGroup = "";
+        } else if (active.id === ActiveHub.SpecialActives.Back.id) {
+            currentGroup = ActiveHub.RootGroup;
             updateActives();
         } else {
             let session = sessionHub.new(e.detail);

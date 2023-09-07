@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-09-04 17:07:35
+ LastEditTime : 2023-09-07 18:06:01
  Description  : 
 -->
 <script lang="ts">
@@ -15,7 +15,7 @@
     import ActivesList from "./time-logger/actives-list.svelte";
     import { chooseIcon } from "@/components";
 
-    import { activeHub } from "@/core";
+    import { activeHub, ActiveHub } from "@/core";
     import { confirmDialog, eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
@@ -35,7 +35,11 @@
     });
 
     const updateActives = () => {
+        console.groupCollapsed("sy-time-logger: updateActives")
+        console.log("Update Current Actives in group", currentGroup);
         currentActives = activeHub.getGroupActives(currentGroup);
+        console.log(currentActives);
+        console.groupEnd();
     };
 
     let rootStyles = getComputedStyle(document.documentElement);
@@ -48,9 +52,17 @@
 
     const onclick = (e: CustomEvent<IActive>) => {
         e.preventDefault();
-        console.log("select active", e.detail);
-        focusedActive = e.detail;
-        console.log("focusedActive", focusedActive);
+        console.groupCollapsed("sy-time-logger: Config Active")
+        let active = e.detail;
+        console.log("select active", active);
+        if (active.isGroup === true) {
+            currentGroup = active.id;
+            updateActives();
+        } else {
+            focusedActive = e.detail;
+            console.log("focusedActive", focusedActive);
+        }
+        console.groupEnd();
         e.stopPropagation();
     };
 
@@ -81,7 +93,8 @@
             },
             title: "新建项目",
             isGroup: false,
-            id: undefined
+            id: undefined,
+            groupId: currentGroup === "" ? undefined : currentGroup
         };
         disablGroupConfig = false;
     };
@@ -150,6 +163,36 @@
 </script>
 
 <main>
+    <div class="block__icons">
+        <div class="fn__flex-1">
+            群组: {currentGroup == ""? "无" : activeHub.get(currentGroup).title}
+        </div>
+        <div class="toolbar__item"
+            style="{currentGroup === "" ? "display: none;" : ""}"
+            on:click={() => {
+                focusedActive = null;
+                currentGroup = ActiveHub.RootGroup;
+                updateActives();
+            }}
+            on:keydown={() => {}}
+        >
+            <svg>
+                <use xlink:href="#iconBack"></use>
+            </svg>
+        </div>
+        <div class="toolbar__item"
+            style="{currentGroup === "" ? "display: none;" : ""}"
+            on:click={() => {
+                let groupActive = activeHub.get(currentGroup);
+                focusedActive = groupActive;
+            }}
+            on:keydown={() => {}}
+        >
+            <svg>
+                <use xlink:href="#iconSettings"></use>
+            </svg>
+        </div>
+    </div>
     <div
         id="all-actives"
         on:click={() => {
@@ -308,6 +351,16 @@
         display: flex;
         justify-content: end;
         align-items: center;
+    }
+
+    main > div.block__icons {
+        padding-left: 25px;
+        padding-right: 25px;
+        background-color: var(--b3-theme-primary);
+        color: var(--b3-theme-on-primary);
+        >.toolbar__item {
+            color: var(--b3-theme-on-primary);
+        }
     }
 
     main > div#selected-active {
