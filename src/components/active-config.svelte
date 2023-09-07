@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-08-30 20:43:23
+ LastEditTime : 2023-09-07 18:53:11
  Description  : 
 -->
 <script lang="ts">
@@ -15,14 +15,14 @@
     import ActivesList from "./time-logger/actives-list.svelte";
     import { chooseIcon } from "@/components";
 
-    import { activeHub } from "@/core";
+    import { activeHub, ActiveHub } from "@/core";
     import { confirmDialog, eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
-    import { confirm, Dialog } from "siyuan";
+    import { confirm, Dialog, showMessage } from "siyuan";
 
-    let group: TActiveGroupID = "";
-    let currentActives: IActive[] = activeHub.getGroupActives(group);
+    let currentGroup: TActiveGroupID = "";
+    let currentActives: IActive[] = activeHub.getGroupActives(currentGroup);
 
     let disablGroupConfig = true;
 
@@ -35,7 +35,11 @@
     });
 
     const updateActives = () => {
-        currentActives = activeHub.getGroupActives(group);
+        console.groupCollapsed("sy-time-logger: updateActives")
+        console.log("Update Current Actives in group", currentGroup);
+        currentActives = activeHub.getGroupActives(currentGroup);
+        console.log(currentActives);
+        console.groupEnd();
     };
 
     let rootStyles = getComputedStyle(document.documentElement);
@@ -48,9 +52,17 @@
 
     const onclick = (e: CustomEvent<IActive>) => {
         e.preventDefault();
-        console.log("select active", e.detail);
-        focusedActive = e.detail;
-        console.log("focusedActive", focusedActive);
+        console.groupCollapsed("sy-time-logger: Config Active")
+        let active = e.detail;
+        console.log("select active", active);
+        if (active.isGroup === true) {
+            currentGroup = active.id;
+            updateActives();
+        } else {
+            focusedActive = e.detail;
+            console.log("focusedActive", focusedActive);
+        }
+        console.groupEnd();
         e.stopPropagation();
     };
 
@@ -67,8 +79,19 @@
     };
 
     const ondel = () => {
+        if (focusedActive.isGroup) {
+            let cnt = activeHub.groupActiveCount(focusedActive.id);
+            if (cnt > 0) {
+                showMessage("不允许删除非空的群组", 5000, "error");
+                return;
+            }
+        }
         confirm("确认", "<p>确定要删除?</p><p>删除后所有相关联的记录都将无效!</p>", () => {
             activeHub.del(focusedActive);
+            if (focusedActive.isGroup) {
+                currentGroup = focusedActive.groupId ?? ActiveHub.RootGroup;
+                updateActives();
+            }
             focusedActive = null;
         });
     };
@@ -81,9 +104,10 @@
             },
             title: "新建项目",
             isGroup: false,
-            id: undefined
+            id: undefined,
+            groupId: currentGroup === "" ? undefined : currentGroup
         };
-        disablGroupConfig = false;
+        disablGroupConfig = currentGroup !== ""; //暂时不允许在群组内创建群组
     };
 
     const onsave = () => {
@@ -100,21 +124,20 @@
     const onreordered = (e: CustomEvent<IActive[]>) => {
         console.log("reordered", e.detail);
         // activeHub.updateActives(e.detail);
-        activeHub.setGroupActives(e.detail, group);
+        activeHub.setGroupActives(e.detail, currentGroup);
     };
 
-    const onmovetogroup = (active: IActive) => {
-        console.log("move to group", active);
-        let groups: IActive[] = Array.from(activeHub.group2Actives.keys())
-                        .filter((id) => id !== group)
-                        .map((id) => activeHub.id2Actives.get(id));
+    const onmovetogroup = () => {
+        console.log("move to group", focusedActive);
+        let groups: IActive[] = activeHub.allGroups().filter((active) => active.id !== currentGroup);
         let rootGroup: IActive = {
             id: "",
             title: "顶层",
             emoji: {
                 type: "symbols",
                 code: "1f518",
-            }
+            },
+            isGroup: true
         };
         groups = [rootGroup, ...groups];
         // let dialog = new Dialog({
@@ -129,6 +152,10 @@
             "<div id='move-to-group' style=\"height: 100%;\"></div>",
             () => {
                 console.log("selectedActive", selectedActive);
+                if (selectedActive?.isGroup === true && selectedActive?.id !== focusedActive.groupId) {
+                    focusedActive.isGroup = false;
+                    focusedActive.groupId = selectedActive.id;
+                }
             }
         );
         let container = dialog.element.querySelector(".b3-dialog__container") as HTMLElement;
@@ -148,6 +175,36 @@
 </script>
 
 <main>
+    <div class="block__icons">
+        <div class="fn__flex-1">
+            群组: {currentGroup == ""? "无" : activeHub.get(currentGroup).title}
+        </div>
+        <div class="toolbar__item"
+            style="{currentGroup === "" ? "display: none;" : ""}"
+            on:click={() => {
+                focusedActive = null;
+                currentGroup = ActiveHub.RootGroup;
+                updateActives();
+            }}
+            on:keydown={() => {}}
+        >
+            <svg>
+                <use xlink:href="#iconBack"></use>
+            </svg>
+        </div>
+        <div class="toolbar__item"
+            style="{currentGroup === "" ? "display: none;" : ""}"
+            on:click={() => {
+                let groupActive = activeHub.get(currentGroup);
+                focusedActive = groupActive;
+            }}
+            on:keydown={() => {}}
+        >
+            <svg>
+                <use xlink:href="#iconSettings"></use>
+            </svg>
+        </div>
+    </div>
     <div
         id="all-actives"
         on:click={() => {
@@ -167,15 +224,24 @@
             in:fly={{ y: 200, duration: 100 }}
         >
             <div style="display: flex; padding: 16px 24px; gap: 25px;">
-                <div class="b3-label__text fn__flex-1">
+                <div class="b3-label__text">
                     {focusedActive.id ?? "新建项目"}
                 </div>
+                <div class="b3-label__text">
+                    群组:
+                    {#if focusedActive?.groupId}
+                        {activeHub.get(focusedActive.groupId).title}
+                    {:else}
+                        无
+                    {/if}
+                </div>
+                <div class="fn__flex-1"></div>
                 {#if focusedActive.id}
                     <div
                         class="b3-tooltips b3-tooltips__s"
                         style="{focusedActive.isGroup === true ? 'display: none' : ''}"
                         aria-label="加入群组"
-                        on:click={() => {onmovetogroup(focusedActive)}}
+                        on:click={onmovetogroup}
                         on:keypress={() => {}}
                     >
                         <svg
@@ -297,6 +363,16 @@
         display: flex;
         justify-content: end;
         align-items: center;
+    }
+
+    main > div.block__icons {
+        padding-left: 25px;
+        padding-right: 25px;
+        background-color: var(--b3-theme-primary);
+        color: var(--b3-theme-on-primary);
+        >.toolbar__item {
+            color: var(--b3-theme-on-primary);
+        }
     }
 
     main > div#selected-active {

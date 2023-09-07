@@ -64,9 +64,24 @@ export const PredefinedActives: IActive[] = [
 
 
 const RootGroup = "";
+const BackActive: IActive = {
+    id: "#Active::GoBack",
+    title: "返回",
+    emoji: {
+        type: "#icon",
+        code: "#iconBack",
+    },
+    isGroup: false,
+};
+
 export class ActiveHub {
-    id2Actives: Map<string, Active>; // ActiveId -> Active
-    group2Actives: Map<string, Active[]>; // GroupId -> Actives, 默认的 root group 为 ""
+    static RootGroup = "";
+    static SpecialActives = {
+        Back: BackActive
+    };
+
+    private id2Actives: Map<string, Active>; // ActiveId -> Active
+    private group2Actives: Map<string, Active[]>; // GroupId -> Actives, 默认的 root group 为 ""
 
     constructor() {
         this.id2Actives = new Map();
@@ -87,12 +102,28 @@ export class ActiveHub {
         return actives;
     }
 
+    get(activeId: string): IActive {
+        return this.id2Actives.get(activeId).dump();
+    }
+
+    allGroups(): IActive[] {
+        let allGroups = Array.from(this.group2Actives.keys());
+        allGroups.splice(allGroups.indexOf(RootGroup), 1);
+        return allGroups.map(group => this.id2Actives.get(group).dump());
+    }
+
     groupActiveCount(group: TActiveGroupID = "") {
+        console.log("groupActiveCount", group)
         return this.group2Actives.get(group)?.length ?? 0;
     }
 
     getGroupActives(group: TActiveGroupID = "") {
-        return this.group2Actives.get(group) ?? [];
+        group = group ?? "";
+        let actives = this.group2Actives.get(group);
+        if (!actives) {
+            return [];
+        }
+        return actives.map(active => active.dump());
     }
 
     setGroupActives(actives: IActive[] | Active[], group?: TActiveGroupID) {
@@ -109,7 +140,7 @@ export class ActiveHub {
         eventBus.emit("on-active-updated");
     }
 
-    add(active: IActive | Active, group?: TActiveGroupID) {
+    add(active: IActive | Active) {
         console.log("Add active", active);
         if (this.id2Actives.has(active.id)) {
             console.error("Active already exists", active);
@@ -118,6 +149,7 @@ export class ActiveHub {
 
         let item = active instanceof Active ? active : new Active(active);
 
+        let group = active?.groupId;
         this.id2Actives.set(item.id, item);
         group = group ?? RootGroup;
         let groupActives = this.group2Actives.get(group);
@@ -137,16 +169,19 @@ export class ActiveHub {
     }
 
     del(active: IActive) {
+        //1. 找到对应的 active 和 group
         let item = this.id2Actives.get(active.id);
         if (!item) {
             console.error("Active not found", active);
             return false;
         }
-        let groupActives = this.group2Actives.get(active.groupId);
+        let groupId = active.groupId ?? RootGroup;
+        let groupActives = this.group2Actives.get(groupId);
         if (!groupActives) {
             console.error("Group not found", active);
             return false;
         }
+        //2. 删除
         this.id2Actives.delete(active.id);
         let index = groupActives.findIndex(item => item.id === active.id);
         if (index < 0) {
@@ -154,6 +189,10 @@ export class ActiveHub {
             return false;
         }
         groupActives.splice(index, 1);
+        if (item.isGroup) {
+            console.log("删除分组", active);
+            this.group2Actives.delete(active.id);
+        }
         eventBus.emit("on-active-updated", item);
         return true;
     }
@@ -167,8 +206,27 @@ export class ActiveHub {
         item.emoji = active.emoji;
         item.title = active.title;
         item.isGroup = active.isGroup ?? false;
+        let oldGroupId = item.groupId;
         item.groupId = active.groupId ?? "";
 
+        if (oldGroupId !== item.groupId) {
+            let oldGroup = this.group2Actives.get(oldGroupId);
+            if (!oldGroup) {
+                return false;
+            }
+            let index = oldGroup.findIndex(item => item.id === active.id);
+            if (index < 0) {
+                return false;
+            }
+            oldGroup.splice(index, 1);
+            let newGroup = this.group2Actives.get(item.groupId);
+            if (!newGroup) {
+                this.group2Actives.set(item.groupId, [item]);
+            } else {
+                newGroup.push(item);
+            }
+        }
+        console.log("ActiveHub: Update active", item);
         eventBus.emit("on-active-updated", item);
 
         return true;

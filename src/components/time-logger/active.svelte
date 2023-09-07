@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:55:13
  FilePath     : /src/components/time-logger/active.svelte
- LastEditTime : 2023-08-29 14:27:36
+ LastEditTime : 2023-09-07 18:26:50
  Description  : 单个活动项目
 -->
 <script lang="ts">
@@ -19,7 +19,7 @@
     let height = active.title ? size.emoji + size.title + 6 : size.emoji;
 
     let styleDisplayCnt = active.isGroup === true ? "" : "display: none;";
-    let subActiveCnt = styleDisplayCnt? activeHub.groupActiveCount(active.groupId) : 0;
+    let subActiveCnt = activeHub.groupActiveCount(active.id);
 
 
     const dispatch = createEventDispatcher();

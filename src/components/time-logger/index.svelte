@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-08-29 14:29:01
+ LastEditTime : 2023-09-07 17:27:43
  Description  : 
 -->
 <script lang="ts">
@@ -14,15 +14,23 @@
 
     import { eventBus } from "@/utils";
 
-    import { activeHub } from "@/core";
+    import { activeHub, ActiveHub } from "@/core";
 
     // let rootActive: IActive = null;
-    let group: TActiveGroupID = "";
-    let currentActives: IActive[] = activeHub.getGroupActives(group);
+    let currentGroup: TActiveGroupID = "";
+    let currentActives: IActive[];
 
     const updateActives = () => {
-        currentActives = activeHub.getGroupActives(group);
+        console.groupCollapsed("sy-time-logger: updateActives")
+        console.log("Update Current Actives in group", currentGroup);
+        currentActives = activeHub.getGroupActives(currentGroup);
+        if (currentGroup !== "") {
+            currentActives = [ActiveHub.SpecialActives.Back, ...currentActives];
+        }
+        console.log(currentActives);
+        console.groupEnd();
     };
+    updateActives();
 
     const doNothing = () => {};
     let runningSession: TimeLogSession[] = [];
@@ -49,10 +57,15 @@
     const onclick = (e: CustomEvent<IActive>) => {
         let active = e.detail;
         if (active.isGroup) {
-            return;
+            currentGroup = active.id;
+            updateActives();
+        } else if (active.id === ActiveHub.SpecialActives.Back.id) {
+            currentGroup = ActiveHub.RootGroup;
+            updateActives();
+        } else {
+            let session = sessionHub.new(e.detail);
+            runningSession = [...runningSession, session];
         }
-        let session = sessionHub.new(e.detail);
-        runningSession = [...runningSession, session];
     }
 
     const removeActive = (e: CustomEvent<TimeLogSession>) => {
