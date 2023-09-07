@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-09-07 18:06:01
+ LastEditTime : 2023-09-07 18:32:36
  Description  : 
 -->
 <script lang="ts">
@@ -19,7 +19,7 @@
     import { confirmDialog, eventBus } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
-    import { confirm, Dialog } from "siyuan";
+    import { confirm, Dialog, showMessage } from "siyuan";
 
     let currentGroup: TActiveGroupID = "";
     let currentActives: IActive[] = activeHub.getGroupActives(currentGroup);
@@ -79,8 +79,19 @@
     };
 
     const ondel = () => {
+        if (focusedActive.isGroup) {
+            let cnt = activeHub.groupActiveCount(focusedActive.id);
+            if (cnt > 0) {
+                showMessage("不允许删除非空的群组", 5000, "error");
+                return;
+            }
+        }
         confirm("确认", "<p>确定要删除?</p><p>删除后所有相关联的记录都将无效!</p>", () => {
             activeHub.del(focusedActive);
+            if (focusedActive.isGroup) {
+                currentGroup = focusedActive.groupId ?? ActiveHub.RootGroup;
+                updateActives();
+            }
             focusedActive = null;
         });
     };
@@ -96,7 +107,7 @@
             id: undefined,
             groupId: currentGroup === "" ? undefined : currentGroup
         };
-        disablGroupConfig = false;
+        disablGroupConfig = currentGroup !== ""; //暂时不允许在群组内创建群组
     };
 
     const onsave = () => {

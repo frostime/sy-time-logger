@@ -118,6 +118,7 @@ export class ActiveHub {
     }
 
     getGroupActives(group: TActiveGroupID = "") {
+        group = group ?? "";
         let actives = this.group2Actives.get(group);
         if (!actives) {
             return [];
@@ -168,16 +169,19 @@ export class ActiveHub {
     }
 
     del(active: IActive) {
+        //1. 找到对应的 active 和 group
         let item = this.id2Actives.get(active.id);
         if (!item) {
             console.error("Active not found", active);
             return false;
         }
-        let groupActives = this.group2Actives.get(active.groupId);
+        let groupId = active.groupId ?? RootGroup;
+        let groupActives = this.group2Actives.get(groupId);
         if (!groupActives) {
             console.error("Group not found", active);
             return false;
         }
+        //2. 删除
         this.id2Actives.delete(active.id);
         let index = groupActives.findIndex(item => item.id === active.id);
         if (index < 0) {
@@ -185,6 +189,10 @@ export class ActiveHub {
             return false;
         }
         groupActives.splice(index, 1);
+        if (item.isGroup) {
+            console.log("删除分组", active);
+            this.group2Actives.delete(active.id);
+        }
         eventBus.emit("on-active-updated", item);
         return true;
     }
