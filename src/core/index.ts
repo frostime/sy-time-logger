@@ -138,7 +138,7 @@ export class ActiveHub {
         eventBus.emit("on-active-updated");
     }
 
-    add(active: IActive | Active, group?: TActiveGroupID) {
+    add(active: IActive | Active) {
         console.log("Add active", active);
         if (this.id2Actives.has(active.id)) {
             console.error("Active already exists", active);
@@ -147,6 +147,7 @@ export class ActiveHub {
 
         let item = active instanceof Active ? active : new Active(active);
 
+        let group = active?.groupId;
         this.id2Actives.set(item.id, item);
         group = group ?? RootGroup;
         let groupActives = this.group2Actives.get(group);
