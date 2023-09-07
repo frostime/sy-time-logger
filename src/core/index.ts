@@ -113,6 +113,7 @@ export class ActiveHub {
     }
 
     groupActiveCount(group: TActiveGroupID = "") {
+        console.log("groupActiveCount", group)
         return this.group2Actives.get(group)?.length ?? 0;
     }
 
