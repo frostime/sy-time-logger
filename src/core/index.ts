@@ -103,7 +103,7 @@ export class ActiveHub {
     }
 
     get(activeId: string): IActive {
-        return this.id2Actives.get(activeId).dump();
+        return this.id2Actives.get(activeId)?.dump();
     }
 
     allGroups(): IActive[] {
@@ -293,7 +293,7 @@ export class TimeLogSession implements ITimeLog {
         this.beg = startTime;
         let intervale: IInterval = {
             beg: startTime,
-            end: 0,
+            end: -1,
             elapsed: 0,
         };
         this.procedure.push(intervale);
@@ -345,6 +345,10 @@ export class TimeLogSessionHub {
 
     constructor() {
         this.sessions = {};
+    }
+
+    size() {
+        return Object.keys(this.sessions).length;
     }
 
     new(active: IActive) {

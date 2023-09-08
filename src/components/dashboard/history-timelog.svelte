@@ -3,12 +3,12 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-08-27 15:06:35
+ LastEditTime : 2023-09-08 10:00:23
  Description  : 
 -->
 <script lang="ts">
     import TimelogItem from "./timelog-item.svelte";
-    import { timeLogManager } from "@/core";
+    import { timeLogManager, sessionHub } from "@/core";
     import { date2str } from "@/utils";
 
     export let dateLogs: IDateLog[] = timeLogManager.allLogs();
@@ -24,6 +24,17 @@
 </script>
 
 <section>
+    {#if sessionHub.size() > 0}
+        <div class="log-date">
+            <span class="log-date-str">进行中</span>
+        </div>
+        <!-- reverse, 把最新的放在前面 -->
+        {#each Object.values(sessionHub.sessions).reverse() as session (session.runId)}
+            {#each session.procedure.reverse() as interval (interval.beg)}
+                <TimelogItem {interval} log={session.export()} />
+            {/each}
+        {/each}
+    {/if}
     {#each dateLogs as dateLog , i (dateLog.date)}
         <div class="log-date">
             <span class="log-date-str">{date2str(dateLog.date)}</span>

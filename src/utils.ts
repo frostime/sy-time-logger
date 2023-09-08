@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-22 14:45:10
  * @FilePath     : /src/utils.ts
- * @LastEditTime : 2023-08-30 20:24:53
+ * @LastEditTime : 2023-09-08 09:57:11
  * @Description  : 
  */
 import type { IEventBus } from "./types/global.js";
@@ -15,6 +15,9 @@ import { confirm, Dialog } from "siyuan";
  * @returns string, HH:mm:ss
  */
 export function time2str(time: number) {
+    if (time < 0) {
+        return "--:--:--";
+    }
     // console.log(time);
     time = Math.round(time);
     let hour = Math.floor(time / 3600);

@@ -21,6 +21,9 @@
     const duration: number = interval.end - interval.beg; //mili-seconds
 
     const timestamp2timestr = (timestamp: number) => {
+        if (timestamp <= 0) {
+            return 'Now';
+        }
         let date = new Date(timestamp);
         let hour = date.getHours().toString().padStart(2, '0');
         let minute = date.getMinutes().toString().padStart(2, '0');
