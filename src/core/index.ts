@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2023 by Yp Z (frostime). All Rights Reserved.
+ * @Author       : Yp Z
+ * @Date         : 2023-09-08 12:25:46
+ * @FilePath     : /src/core/index.ts
+ * @LastEditTime : 2023-09-08 20:53:38
+ * @Description  : 
+ */
 import { eventBus, time2datestr, i18n } from "@/utils";
 import { Plugin } from "siyuan";
 
