@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-09-08 12:25:46
  * @FilePath     : /src/core/index.ts
- * @LastEditTime : 2023-09-08 20:53:38
+ * @LastEditTime : 2023-09-09 01:30:11
  * @Description  : 
  */
 import { eventBus, time2datestr, i18n } from "@/utils";
@@ -400,37 +400,97 @@ const compareTimelog = (a: ITimeLog, b: ITimeLog) => {
 };
 
 const DATA_TIME_LOGGER = "time-log.json";
+type TYear = number;
+type TMonth = number;
 type TDateStr = string;
 interface ILogHistory {
     [key: TDateStr]: ITimeLog[];
 }
 
+const INDEX_FILE = "log-index.json";
+const LOG_FILE = (year?: number) => {
+    year = year ?? (new Date()).getFullYear();
+    return `logs/${year}-history.json`;
+}
 export class TimeLogManager {
     plugin: Plugin;
     logHistory: Map<TDateStr, ITimeLog[]>; // 以日期为 key 的日志, 方便查询
+    index: Map<TYear, Map<TMonth, Set<TDateStr>> | undefined>; // logHistory 的索引, 方便查询, undefined 表示存在对应日志, 但是还没有导入
 
     constructor() {
         this.plugin = null;
         this.logHistory = new Map();
+        this.index = new Map();
     }
 
     async init(plugin: Plugin) {
+        console.log("TimeLogManager.init()")
         this.plugin = plugin;
+        let thisYear = new Date().getFullYear();
         // plugin.data[DATA_TIME_LOGGER] = this.history;
+        let index: {[key: TYear]: any} = (await plugin.loadData(INDEX_FILE)) || {};
+        for (let year in index) {
+            this.index.set(parseInt(year), undefined);
+        }
 
+        //默认只导入今年一年的记录
+        let record: ILogHistory = (await plugin.loadData(LOG_FILE(thisYear))) || {};
+        for (let datestr in record) {
+            this.logHistory.set(datestr, record[datestr]);
+            this.updateIndex(datestr);
+        }
+    }
 
-        let record: ITimeLog[] | ILogHistory = await plugin.loadData(DATA_TIME_LOGGER);
-        //if is ITimelog[]
-        if (Array.isArray(record)) {
-            console.log("Got old style history storage, converting...")
-            for (let i = 0; i < record.length; i++) {
-                this.add(record[i]);
+    private pickHistory(year: TYear, months?: TMonth[]): {[key: TDateStr]: ITimeLog[]} {
+        let yearIndex = this.index.get(year);
+        if (!yearIndex) {
+            return {};
+        }
+        if (!months) {
+            let results = {};
+            for (let month of yearIndex.keys()) {
+                let set = yearIndex?.get(month);
+                if (set === undefined || set.size === 0) {
+                    continue;
+                }
+                for (let datestr of set) {
+                    results[datestr] = this.logHistory.get(datestr);
+                }
             }
-        } else {
-            for (let datestr in record) {
-                this.logHistory.set(datestr, record[datestr]);
+            return results;
+        }
+        let results = {};
+        for (let month of months) {
+            let set = yearIndex?.get(month);
+            if (set === undefined || set.size === 0) {
+                continue;
+            }
+            for (let datestr of set) {
+                results[datestr] = this.logHistory.get(datestr);
             }
         }
+        return results;
+    }
+
+    /**
+     * 根据日期字符串更新索引, 从而方便在 logHistory 中快速查询
+     * @param datestr yyyy-mm-dd
+     */
+    updateIndex(datestr: TDateStr) {
+        let date = new Date(datestr);
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let yearIndex = this.index.get(year);
+        if (!yearIndex) {
+            yearIndex = new Map();
+            this.index.set(year, yearIndex);
+        }
+        let monthIndex = yearIndex.get(month);
+        if (!monthIndex) {
+            monthIndex = new Set();
+            yearIndex.set(month, monthIndex);
+        }
+        monthIndex.add(datestr);
     }
 
     add(timelog: ITimeLog) {
@@ -441,10 +501,25 @@ export class TimeLogManager {
             this.logHistory.set(begDate, dateLog);
         }
         dateLog.push(timelog);
+        this.updateIndex(begDate);
     }
 
-    save() {
-        this.plugin.saveData(DATA_TIME_LOGGER, Object.fromEntries(this.logHistory.entries()));
+    async save() {
+        //不需要保存完整的 index, 只需要保存的 year 一级, 用来确认存在哪些日志就行了
+        let index = {};
+        for (let year of this.index.keys()) {
+            let monthIndex = this.index.get(year);
+            index[year] = monthIndex.keys();
+        }
+        await this.plugin.saveData(INDEX_FILE, index);
+        for (let year of this.index.keys()) {
+            let months = this.index.get(year);
+            if (months !== undefined) {
+                const file = LOG_FILE(year);
+                const data = this.pickHistory(year);
+                await this.plugin.saveData(file, data);
+            }
+        }
     }
 
     allLogs(): IDateLog[] {
