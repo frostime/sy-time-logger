@@ -89,4 +89,6 @@ If you create a new item under a group, this item will be assigned to that group
 
 ## Acknowledgement
 
-This plugin is heavily inspired by aTimeLogger, of which I am a paid user. However, I'm not accustomed to recording activities on my phone, so I created this plugin version called Time Logger.
+- This plugin is heavily inspired by aTimeLogger, of which I am a paid user. However, I'm not accustomed to recording activities on my phone, so I created this plugin version called Time Logger.
+
+- The english version of this readme is translated by ChatGPT, from Zh_CN version
