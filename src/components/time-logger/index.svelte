@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-09-07 17:27:43
+ LastEditTime : 2023-09-08 11:56:40
  Description  : 
 -->
 <script lang="ts">
@@ -12,7 +12,7 @@
     import LoggingActive from './logging-active.svelte';
     import { TimeLogSession, sessionHub } from "@/core";
 
-    import { eventBus } from "@/utils";
+    import { eventBus, i18n } from "@/utils";
 
     import { activeHub, ActiveHub } from "@/core";
 
@@ -78,8 +78,8 @@
 <div class="fn__flex-1" style="padding-bottom: 25px; overflow-x: hidden;">
     <div class="block__icons">
         <div class="block__logo">
-            <svg><use xlink:href="#iconBookmark" /></svg>
-            时间日志
+            <svg><use xlink:href="#iconTimeLogger" /></svg>
+            {i18n.name}
         </div>
         <span class="fn__flex-1" />
         <span class="fn__space" />
@@ -89,7 +89,7 @@
             }}
             on:keydown={doNothing}
             class="block__icon b3-tooltips b3-tooltips__sw"
-            aria-label="设置"
+            aria-label={i18n.ui_main.setting}
         >
             <svg class=""><use xlink:href="#iconSettings" /></svg>
         </span>
@@ -100,12 +100,12 @@
             }}
             on:keydown={doNothing}
             class="block__icon b3-tooltips b3-tooltips__sw"
-            aria-label="记录"
+            aria-label={i18n.ui_main.history}
         >
             <svg><use xlink:href="#iconAlignCenter"></use></svg>
         </span>
         <span class="fn__space" />
-        <span data-type="min" class="block__icon b3-tooltips b3-tooltips__sw" aria-label="最小化 Ctrl+W"><svg><use xlink:href="#iconMin"></use></svg></span>
+        <span data-type="min" class="block__icon b3-tooltips b3-tooltips__sw" aria-label="{i18n.ui_main.min} Ctrl+W"><svg><use xlink:href="#iconMin"></use></svg></span>
     </div>
 
     <section id="running-action-list">

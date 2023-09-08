@@ -1,4 +1,4 @@
-import { eventBus, time2datestr } from "@/utils";
+import { eventBus, time2datestr, i18n } from "@/utils";
 import { Plugin } from "siyuan";
 
 class Active implements IActive {
@@ -39,7 +39,7 @@ export const PredefinedActives: IActive[] = [
             type: "objects",
             code: "1f4bb",
         },
-        title: "学习",
+        title: "Learning",
         isGroup: false,
     },
     {
@@ -48,7 +48,7 @@ export const PredefinedActives: IActive[] = [
             type: "objects",
             code: "270f",
         },
-        title: "写作",
+        title: "Writing",
         isGroup: false,
     },
     {
@@ -57,7 +57,7 @@ export const PredefinedActives: IActive[] = [
             type: "objects",
             code: "1f914",
         },
-        title: "思考",
+        title: "Thinking",
         isGroup: false,
     },
 ];
@@ -66,7 +66,7 @@ export const PredefinedActives: IActive[] = [
 const RootGroup = "";
 const BackActive: IActive = {
     id: "#Active::GoBack",
-    title: "返回",
+    title: "back",
     emoji: {
         type: "#icon",
         code: "#iconBack",
@@ -103,7 +103,7 @@ export class ActiveHub {
     }
 
     get(activeId: string): IActive {
-        return this.id2Actives.get(activeId).dump();
+        return this.id2Actives.get(activeId)?.dump();
     }
 
     allGroups(): IActive[] {
@@ -293,7 +293,7 @@ export class TimeLogSession implements ITimeLog {
         this.beg = startTime;
         let intervale: IInterval = {
             beg: startTime,
-            end: 0,
+            end: -1,
             elapsed: 0,
         };
         this.procedure.push(intervale);
@@ -345,6 +345,10 @@ export class TimeLogSessionHub {
 
     constructor() {
         this.sessions = {};
+    }
+
+    size() {
+        return Object.keys(this.sessions).length;
     }
 
     new(active: IActive) {

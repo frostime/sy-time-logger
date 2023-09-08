@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/active-config.svelte
- LastEditTime : 2023-09-07 18:53:11
+ LastEditTime : 2023-09-08 12:22:26
  Description  : 
 -->
 <script lang="ts">
@@ -16,7 +16,7 @@
     import { chooseIcon } from "@/components";
 
     import { activeHub, ActiveHub } from "@/core";
-    import { confirmDialog, eventBus } from "@/utils";
+    import { confirmDialog, eventBus, i18n } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
     import { confirm, Dialog, showMessage } from "siyuan";
@@ -25,6 +25,9 @@
     let currentActives: IActive[] = activeHub.getGroupActives(currentGroup);
 
     let disablGroupConfig = true;
+
+
+    const ThisI18n = i18n.ui_active_config;
 
     onMount(() => {
         eventBus.on("on-active-updated", updateActives);
@@ -82,11 +85,11 @@
         if (focusedActive.isGroup) {
             let cnt = activeHub.groupActiveCount(focusedActive.id);
             if (cnt > 0) {
-                showMessage("不允许删除非空的群组", 5000, "error");
+                showMessage(ThisI18n.msg_del_empty, 5000, "error");
                 return;
             }
         }
-        confirm("确认", "<p>确定要删除?</p><p>删除后所有相关联的记录都将无效!</p>", () => {
+        confirm(ThisI18n.confirm_del, ThisI18n.confirm_del_text, () => {
             activeHub.del(focusedActive);
             if (focusedActive.isGroup) {
                 currentGroup = focusedActive.groupId ?? ActiveHub.RootGroup;
@@ -102,7 +105,7 @@
                 type: "symbols",
                 code: "1f518",
             },
-            title: "新建项目",
+            title: i18n.active.new,
             isGroup: false,
             id: undefined,
             groupId: currentGroup === "" ? undefined : currentGroup
@@ -132,7 +135,7 @@
         let groups: IActive[] = activeHub.allGroups().filter((active) => active.id !== currentGroup);
         let rootGroup: IActive = {
             id: "",
-            title: "顶层",
+            title: i18n.active.root,
             emoji: {
                 type: "symbols",
                 code: "1f518",
@@ -148,7 +151,7 @@
         // });
         let selectedActive: IActive;
         let dialog: Dialog = confirmDialog(
-            "移动到群组",
+            ThisI18n.confirm_move,
             "<div id='move-to-group' style=\"height: 100%;\"></div>",
             () => {
                 console.log("selectedActive", selectedActive);
@@ -177,7 +180,7 @@
 <main>
     <div class="block__icons">
         <div class="fn__flex-1">
-            群组: {currentGroup == ""? "无" : activeHub.get(currentGroup).title}
+            {i18n.group}: {currentGroup == ""? "/" : activeHub.get(currentGroup).title}
         </div>
         <div class="toolbar__item"
             style="{currentGroup === "" ? "display: none;" : ""}"
@@ -225,14 +228,14 @@
         >
             <div style="display: flex; padding: 16px 24px; gap: 25px;">
                 <div class="b3-label__text">
-                    {focusedActive.id ?? "新建项目"}
+                    {focusedActive.id ?? i18n.active.new}
                 </div>
                 <div class="b3-label__text">
-                    群组:
+                    {i18n.group}:
                     {#if focusedActive?.groupId}
                         {activeHub.get(focusedActive.groupId).title}
                     {:else}
-                        无
+                        /
                     {/if}
                 </div>
                 <div class="fn__flex-1"></div>
@@ -240,7 +243,7 @@
                     <div
                         class="b3-tooltips b3-tooltips__s"
                         style="{focusedActive.isGroup === true ? 'display: none' : ''}"
-                        aria-label="加入群组"
+                        aria-label={ThisI18n.confirm_move}
                         on:click={onmovetogroup}
                         on:keypress={() => {}}
                     >
@@ -252,7 +255,7 @@
                     </div>
                     <div
                         class="b3-tooltips b3-tooltips__s"
-                        aria-label="删除"
+                        aria-label={ThisI18n.del}
                         on:click={ondel}
                         on:keypress={() => {}}
                     >
@@ -266,8 +269,8 @@
             </div>
             <div class="fn__flex b3-label">
                 <div class="fn__flex-1">
-                    标题
-                    <div class="b3-label__text">项目的标题</div>
+                    {ThisI18n.config_title}
+                    <div class="b3-label__text">{ThisI18n.config_title_text}</div>
                 </div>
                 <span class="fn__space" />
                 <div class="fn__flex-center fn__size200 attr-value">
@@ -279,8 +282,8 @@
             </div>
             <div class="fn__flex b3-label">
                 <div class="fn__flex-1">
-                    图标
-                    <div class="b3-label__text">点击右侧更改图标</div>
+                    {ThisI18n.config_icon}
+                    <div class="b3-label__text">{ThisI18n.config_icon_text}</div>
                 </div>
                 <span class="fn__space" />
                 <div
@@ -299,8 +302,8 @@
             </div>
             <div class="fn__flex b3-label">
                 <div class="fn__flex-1">
-                    群组
-                    <div class="b3-label__text">群组项目</div>
+                    {ThisI18n.config_group}
+                    <div class="b3-label__text">{ThisI18n.config_group_text}</div>
                 </div>
                 <span class="fn__space" />
                 <div class="fn__flex-center fn__size200 attr-value">
@@ -325,10 +328,10 @@
                             focusedActive = null;
                         }}
                     >
-                        取消
+                        {ThisI18n.btn_cancel}
                     </button>
                     <button class="b3-button b3-button--text" on:click={onsave}>
-                        保存
+                        {ThisI18n.btn_save}
                     </button>
                 </div>
             </div>
@@ -372,6 +375,11 @@
         color: var(--b3-theme-on-primary);
         >.toolbar__item {
             color: var(--b3-theme-on-primary);
+            background-color: var(--b3-theme-primary);
+            &:hover {
+                background-color: var(--b3-theme-on-primary);
+                color: var(--b3-theme-primary);
+            }
         }
     }
 

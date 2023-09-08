@@ -1,16 +1,43 @@
 {
-    "addTopBarIcon": "使用插件添加一个顶栏按钮",
-    "cancel": "取消",
-    "save": "保存",
-    "byeMenu": "再见，菜单！",
-    "helloPlugin": "你好，插件！",
-    "byePlugin": "再见，插件！",
-    "showDialog": "弹出一个对话框",
-    "removedData": "数据已删除",
-    "confirmRemove": "确认删除 ${name} 中的数据？",
-    "insertEmoji": "插入表情",
-    "name": "思源",
-    "hello": {
-        "makesure": "使用这个模板之前，请阅读<a href=\"https://github.com/siyuan-note/plugin-sample\">官方教程</a>, 确保自己已经理解了插件的基本开发流程。"
+    "name": "时间日志",
+    "dialog_history": "记录",
+    "dialog_setting": "配置",
+    "group": "群组",
+    "goback": "返回",
+    "msg_session_stop": "活动 ${title} 结束, 用时 ${elapsed}",
+    "active": {
+        "new": "新建项目",
+        "root": "顶层"
+    },
+    "ui_main": {
+        "setting": "设置",
+        "history": "记录",
+        "min": "最小化"
+    },
+    "ui_history": {
+        "running": "进行中",
+        "cnt": "记录数量"
+    },
+    "ui_logging_active": {
+        "memo": "备注",
+        "input_memo": "输入备注",
+        "pause": "暂停",
+        "stop": "结束",
+        "start": "开始"
+    },
+    "ui_active_config": {
+        "msg_del_empty": "不允许删除非空的群组",
+        "del": "删除",
+        "confirm_del": "确认删除",
+        "confirm_del_text": "<p>确定要删除?</p><p>删除后所有相关联的记录都将无效!</p>",
+        "confirm_move": "移动到群组",
+        "config_title": "标题",
+        "config_title_text": "活动项目的标题",
+        "config_icon": "图标",
+        "config_icon_text": "点击右侧更改活动的图标",
+        "config_group": "群组",
+        "config_group_text": "活动项目所属的群组",
+        "btn_cancel": "取消",
+        "btn_save": "保存"
     }
 }

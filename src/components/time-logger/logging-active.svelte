@@ -5,7 +5,7 @@
     import Active from "./active.svelte";
     import { TimeLogSession } from "@/core";
 
-    import { eventBus } from "@/utils";
+    import { eventBus, i18n } from "@/utils";
     import { onDestroy, onMount } from "svelte";
 
     import { inputDialog } from "@/utils";
@@ -85,7 +85,7 @@
     <div class="running"
         on:keypress={() => {}}
         on:click={() => {
-            inputDialog("备注", session.memo, "输入备注").then((memo) => {
+            inputDialog(i18n.ui_logging_active.memo, session.memo, i18n.ui_logging_active.input_memo).then((memo) => {
                 session.memo = memo;
             });
         }}
@@ -96,19 +96,17 @@
         <div class="running-time">
             {timer}
         </div>
-        {#if session.memo != ""}
-            <div class="running-memo">
-                {session.memo}
-            </div>
-        {/if}
+        <div class="running-memo">
+            {session.memo}
+        </div>
     </div>
     <div class="action-button">
         {#if status == "running"}
-            <button class="btn-pause" on:click={pause}>暂停</button>
+            <button class="btn-pause" on:click={pause}>{i18n.ui_logging_active.pause}</button>
         {:else if status == "pause"}
-            <button class="btn-start" on:click={start}>开始</button>
+            <button class="btn-start" on:click={start}>{i18n.ui_logging_active.start}</button>
         {/if}
-        <button class="btn-stop" on:click={stop}>结束</button>
+        <button class="btn-stop" on:click={stop}>{i18n.ui_logging_active.stop}</button>
     </div>
     <div class="close-action" on:click={del} on:keypress={() => {}}>
         <svg><use xlink:href="#iconClose" /></svg>
@@ -135,6 +133,8 @@
             flex-direction: column;
             flex: 1;
             gap: 4px;
+            min-width: 105px;
+            overflow-x: hidden; //配合下面的 text-overflow 使用
             .running-title {
                 flex: 0;
                 font-size: 14px;
@@ -155,6 +155,9 @@
                 font-size: 12px;
                 // font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
 
