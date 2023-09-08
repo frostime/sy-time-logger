@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-09-07 17:27:43
+ LastEditTime : 2023-09-07 21:09:46
  Description  : 
 -->
 <script lang="ts">
@@ -78,7 +78,7 @@
 <div class="fn__flex-1" style="padding-bottom: 25px; overflow-x: hidden;">
     <div class="block__icons">
         <div class="block__logo">
-            <svg><use xlink:href="#iconBookmark" /></svg>
+            <svg><use xlink:href="#iconTimeLogger" /></svg>
             时间日志
         </div>
         <span class="fn__flex-1" />
