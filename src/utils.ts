@@ -8,6 +8,13 @@
  */
 import type { IEventBus } from "./types/global.js";
 import { confirm, Dialog } from "siyuan";
+import I18n from "./i18n/zh_CN.json";
+
+
+export let i18n: typeof I18n;
+export const setI18n = (i18nObj: any) => {
+    i18n = i18nObj;
+};
 
 /**
  * 将 timestamp 转换为 HH:mm:ss 格式 的字符串

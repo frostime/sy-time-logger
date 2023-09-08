@@ -9,7 +9,7 @@
 <script lang="ts">
     import TimelogItem from "./timelog-item.svelte";
     import { timeLogManager, sessionHub } from "@/core";
-    import { date2str } from "@/utils";
+    import { date2str, i18n } from "@/utils";
 
     export let dateLogs: IDateLog[] = timeLogManager.allLogs();
     console.log(dateLogs);
@@ -26,7 +26,7 @@
 <section>
     {#if sessionHub.size() > 0}
         <div class="log-date">
-            <span class="log-date-str">进行中</span>
+            <span class="log-date-str">{i18n.ui_history.running}</span>
         </div>
         <!-- reverse, 把最新的放在前面 -->
         {#each Object.values(sessionHub.sessions).reverse() as session (session.runId)}
@@ -38,7 +38,7 @@
     {#each dateLogs as dateLog , i (dateLog.date)}
         <div class="log-date">
             <span class="log-date-str">{date2str(dateLog.date)}</span>
-            <span class="counter b3-tooltips b3-tooltips__sw" aria-label="记录数">{dateLogCnt[i]}</span>
+            <span class="counter b3-tooltips b3-tooltips__sw" aria-label={i18n.ui_history.cnt}>{dateLogCnt[i]}</span>
         </div>
         {#each dateLog.timeLogs as timelog (timelog.beg)}
             {#each timelog.procedure as interval (interval.beg)}

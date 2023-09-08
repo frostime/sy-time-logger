@@ -1,16 +1,43 @@
 {
-    "addTopBarIcon": "Add a top bar icon by plugin",
-    "cancel": "Cancel",
-    "save": "Save",
-    "byeMenu": "Bye, Menu!",
-    "helloPlugin": "Hello, Plugin!",
-    "byePlugin": "Bye, Plugin!",
-    "showDialog": "Show dialog",
-    "removedData": "Data deleted",
-    "confirmRemove": "Confirm to delete the data in ${name}?",
-    "insertEmoji": "Insert Emoji",
-    "name": "SiYuan",
-    "hello": {
-        "makesure": "Before using this template, please read the <a href=\"https://github.com/siyuan-note/plugin-sample\">offical sample</a>, make sure that you've known about the pipeline for plugin developing."
+    "name": "Time Log",
+    "dialog_history": "History",
+    "dialog_setting": "Settings",
+    "group": "Group",
+    "goback": "Go back",
+    "msg_session_stop": "Active ${title} ended, elapsed time: ${elapsed}",
+    "active": {
+        "new": "New Active",
+        "root": "Top Level"
+    },
+    "ui_main": {
+        "setting": "Settings",
+        "history": "History",
+        "min": "Minimize"
+    },
+    "ui_history": {
+        "running": "In Progress",
+        "cnt": "Record Count"
+    },
+    "ui_logging_active": {
+        "memo": "Memo",
+        "input_memo": "Enter Memo",
+        "pause": "Pause",
+        "stop": "Stop",
+        "start": "Start"
+    },
+    "ui_active_config": {
+        "msg_del_empty": "Cannot delete non-empty group",
+        "del": "Delete",
+        "confirm_del": "Confirm Deletion",
+        "confirm_del_text": "<p>Are you sure you want to delete?</p><p>Deleting will invalidate all related records!</p>",
+        "confirm_move": "Move to Group",
+        "config_title": "Title",
+        "config_title_text": "Title of the Active",
+        "config_icon": "Icon",
+        "config_icon_text": "Click on the right to change the icon of the Active",
+        "config_group": "Group",
+        "config_group_text": "Group to which the Active belongs",
+        "btn_cancel": "Cancel",
+        "btn_save": "Save"
     }
 }
