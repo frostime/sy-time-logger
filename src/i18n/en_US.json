@@ -36,7 +36,7 @@
         "config_icon": "Icon",
         "config_icon_text": "Click on the right to change the icon of the Active",
         "config_group": "Group",
-        "config_group_text": "Group to which the Active belongs",
+        "config_group_text": "This is a group",
         "btn_cancel": "Cancel",
         "btn_save": "Save"
     }

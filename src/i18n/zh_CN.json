@@ -36,7 +36,7 @@
         "config_icon": "图标",
         "config_icon_text": "点击右侧更改活动的图标",
         "config_group": "群组",
-        "config_group_text": "活动项目所属的群组",
+        "config_group_text": "该项目是否为群组",
         "btn_cancel": "取消",
         "btn_save": "保存"
     }
