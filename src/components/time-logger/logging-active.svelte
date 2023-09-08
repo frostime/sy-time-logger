@@ -96,11 +96,9 @@
         <div class="running-time">
             {timer}
         </div>
-        {#if session.memo != ""}
-            <div class="running-memo">
-                {session.memo}
-            </div>
-        {/if}
+        <div class="running-memo">
+            {session.memo}
+        </div>
     </div>
     <div class="action-button">
         {#if status == "running"}
