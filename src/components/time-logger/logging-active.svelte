@@ -133,6 +133,8 @@
             flex-direction: column;
             flex: 1;
             gap: 4px;
+            min-width: 105px;
+            overflow-x: hidden; //配合下面的 text-overflow 使用
             .running-title {
                 flex: 0;
                 font-size: 14px;
@@ -153,6 +155,9 @@
                 font-size: 12px;
                 // font-weight: bold;
                 color: var(--b3-protyle-inline-em-color);
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
 
