@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 17:34:20
+ LastEditTime : 2023-09-09 17:37:04
  Description  : 
 -->
 <script lang="ts">
@@ -87,7 +87,7 @@
         <div style="width: 20%;"/>
         {#if showCompScopeMenu} 
             <div class="scope-menu">
-                <div on:click={() => shiftScoopBeg(-1)}>&LeftTriangle;</div>
+                <div on:click={() => shiftScoopBeg(-1)}>&lt;</div>
                 {#each AllScoopType as type}
                     <div data-type="{type}"
                         class={type === currentScoop.type ? "current-type" : ""}
@@ -96,7 +96,7 @@
                         {type}
                     </div>
                 {/each}
-                <div on:click={() => shiftScoopBeg(1)}>&RightTriangle;</div>
+                <div on:click={() => shiftScoopBeg(1)}>&gt;</div>
             </div>
         {/if}
     </div>
@@ -177,6 +177,12 @@
                 cursor: pointer;
             }
             &>div.current-type {
+                color: var(--b3-theme-primary);
+            }
+            &>div:first-child:hover {
+                color: var(--b3-theme-primary);
+            }
+            &>div:last-child:hover {
                 color: var(--b3-theme-primary);
             }
         }
