@@ -6,9 +6,9 @@
  * @LastEditTime : 2023-09-08 09:57:11
  * @Description  : 
  */
-import type { IEventBus } from "./types/global.js";
+import type { IEventBus } from "../types/global.js";
 import { confirm, Dialog } from "siyuan";
-import I18n from "./i18n/zh_CN.json";
+import I18n from "../i18n/zh_CN.json";
 
 
 export let i18n: typeof I18n;
