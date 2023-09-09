@@ -163,6 +163,7 @@ export class TimeLogManager {
      */
     getDateLogs(dates: TDateStr[]) {
         dates = dates.sort((a, b) => a > b ? -1 : a < b ? 1 : 0); //逆序排序
+        dates = dates.filter((date: TDateStr) => this.logHistory.has(date));
         return dates.map((date: TDateStr) => {
             let timeLogs = this.logHistory.get(date);
             timeLogs = timeLogs.sort(compareTimelog);

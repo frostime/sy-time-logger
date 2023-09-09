@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 18:18:37
+ LastEditTime : 2023-09-09 18:34:35
  Description  : 
 -->
 <script lang="ts">
@@ -16,6 +16,7 @@
     const AllScoopType: ScoopType[] = ['day', 'week', 'month', 'year'];
     let scoop = {
         type: 'year' as ScoopType,
+        date: new Date() as Date,
         beg: new Date() as Date,
         end: null as Date,
         value: new Date().getFullYear() as any
@@ -24,14 +25,15 @@
     export let dateLogs: IDateLog[] = [];
 
     const updateQueryDateLogs = () => {
+        console.log('Update Date Log')
         if (scoop.type === 'year') {
-            dateLogs = timeLogManager.queryYearLogs(scoop.beg.getFullYear());
+            dateLogs = timeLogManager.queryYearLogs(scoop.date.getFullYear());
         } else if (scoop.type === 'month') {
-            let year = scoop.beg.getFullYear();
-            let month = scoop.beg.getMonth() + 1;
+            let year = scoop.date.getFullYear();
+            let month = scoop.date.getMonth() + 1;
             dateLogs = timeLogManager.queryMonthLogs(year, month);
         } else if (scoop.type === 'day') {
-            dateLogs = timeLogManager.queryDateLogs(scoop.beg);
+            dateLogs = timeLogManager.queryDateLogs(scoop.date);
         } else if (scoop.type === 'week') {
             dateLogs = timeLogManager.qeuryDurationLogs(scoop.beg, scoop.end);
         }
@@ -48,16 +50,16 @@
     });
 
     const updateScoopValue = () => {
-        let beg = scoop.beg;
+        let date = scoop.date;
         let stype = scoop.type;
         if (stype === 'year') {
-            scoop.value = beg.getFullYear();
+            scoop.value = date.getFullYear();
         } else if (stype === 'month') {
-            scoop.value = date2str(beg).slice(0, -3);
+            scoop.value = date2str(date).slice(0, -3);
         } else if (stype === 'day') {
-            scoop.value = date2str(beg);
+            scoop.value = date2str(date);
         } else if (stype === 'week') {
-            let week = getWeek(beg);
+            let week = getWeek(date);
             scoop.beg = week.start;
             scoop.end = week.end;
             scoop.value = `${date2str(scoop.beg)} ~ ${date2str(scoop.end)}`;
@@ -69,16 +71,16 @@
         updateQueryDateLogs();
     }
     const shiftScoopBeg = (delta: -1 | 1) => {
-        let beg = scoop.beg;
+        let date = scoop.date;
         let stype = scoop.type;
         if (stype === 'year') {
-            beg.setFullYear(beg.getFullYear() + delta);
+            date.setFullYear(date.getFullYear() + delta);
         } else if (stype === 'month') {
-            beg.setMonth(beg.getMonth() + delta);
+            date.setMonth(date.getMonth() + delta);
         } else if (stype === 'day') {
-            beg.setDate(beg.getDate() + delta);
+            date.setDate(date.getDate() + delta);
         } else if (stype === 'week') {
-            beg.setDate(beg.getDate() + delta * 7);
+            date.setDate(date.getDate() + delta * 7);
         }
         updateScoopValue();
         updateQueryDateLogs();
@@ -102,21 +104,21 @@
             <div class="triangle-button"/>
         </div>
         <div style="width: 20%;"/>
-        {#if showCompScopeMenu} 
-            <div class="scope-menu">
-                <div on:click={() => shiftScoopBeg(-1)}>&lt;</div>
-                {#each AllScoopType as type}
-                    <div data-type="{type}"
-                        class={type === scoop.type ? "current-type" : ""}
-                        on:click={() => changeScoopType(type)}
-                    >
-                        {type}
-                    </div>
-                {/each}
-                <div on:click={() => shiftScoopBeg(1)}>&gt;</div>
-            </div>
-        {/if}
     </div>
+    {#if showCompScopeMenu} 
+        <div class="scope-menu">
+            <div on:click={() => shiftScoopBeg(-1)}>&lt;</div>
+            {#each AllScoopType as type}
+                <div data-type="{type}"
+                    class={type === scoop.type ? "current-type" : ""}
+                    on:click={() => changeScoopType(type)}
+                >
+                    {type}
+                </div>
+            {/each}
+            <div on:click={() => shiftScoopBeg(1)}>&gt;</div>
+        </div>
+    {/if}
     <section>
         {#if sessionHub.size() > 0}
             <div class="log-date">
@@ -175,36 +177,38 @@
                 cursor: pointer;
             }
         }
-        .scope-menu {
-            z-index: 1;
-            position: absolute;
-            left: 3px;
-            right: 3px;
-            bottom: -36px;
-            height: 30px;
-            border: 2px solid var(--b3-theme-primary);
-            background-color: var(--b3-theme-background);
-            color: var(--b3-theme-on-background);
-            display: flex;
-            align-items: center;
-            &>div {
-                flex: 1;
-                text-align: center;
-                font-weight: bold;
-                cursor: pointer;
-            }
-            &>div.current-type {
-                color: var(--b3-theme-primary);
-            }
-            &>div:first-child:hover {
-                color: var(--b3-theme-primary);
-            }
-            &>div:last-child:hover {
-                color: var(--b3-theme-primary);
-            }
+    }
+
+    .scope-menu {
+        z-index: 1;
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: -36px;
+        height: 30px;
+        // border: 2px solid var(--b3-theme-primary);
+        border-radius: 10px;
+        background-color: var(--b3-theme-background);
+        color: var(--b3-theme-on-background);
+        display: flex;
+        align-items: center;
+        &>div {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        &>div.current-type {
+            color: var(--b3-theme-primary);
+        }
+        &>div:first-child:hover {
+            color: var(--b3-theme-primary);
+        }
+        &>div:last-child:hover {
+            color: var(--b3-theme-primary);
         }
     }
-    
+
     section {
         overflow-y: scroll;
     }
