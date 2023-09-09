@@ -18,8 +18,6 @@ const compareTimelog = (a: ITimeLog, b: ITimeLog) => {
     }
 };
 
-const DATA_TIME_LOGGER = "time-log.json";
-
 const INDEX_FILE = "log-index.json";
 const LOG_FILE = (year?: number) => {
     year = year ?? (new Date()).getFullYear();

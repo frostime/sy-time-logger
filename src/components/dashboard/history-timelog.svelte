@@ -3,13 +3,13 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 18:34:35
+ LastEditTime : 2023-09-09 18:38:46
  Description  : 
 -->
 <script lang="ts">
     import TimelogItem from "./timelog-item.svelte";
     import { timeLogManager, sessionHub } from "@/core";
-    import { date2str, i18n } from "@/utils/index";
+    import { date2str, i18n, time2str } from "@/utils/index";
     import { getWeek } from "@/utils/time";
 
     type ScoopType = 'day' | 'week' | 'month' |'year';
@@ -21,6 +21,7 @@
         end: null as Date,
         value: new Date().getFullYear() as any
     }
+    let sumOfElapsed: TMiliSecond;
 
     export let dateLogs: IDateLog[] = [];
 
@@ -37,6 +38,12 @@
         } else if (scoop.type === 'week') {
             dateLogs = timeLogManager.qeuryDurationLogs(scoop.beg, scoop.end);
         }
+        sumOfElapsed = 0;
+        dateLogs.map((datelog: IDateLog) => {
+            datelog.timeLogs.map((timelog: ITimeLog) => {
+                sumOfElapsed += timelog.elapsed;
+            })
+        });
     }
     updateQueryDateLogs();
 
@@ -100,7 +107,7 @@
             on:keypress={() => {}}
         >
             <div> {scoop.value} </div>
-            <div> 记录时间总计: 09:18 </div>
+            <div> 记录时间总计: {time2str(sumOfElapsed / 1000)} </div>
             <div class="triangle-button"/>
         </div>
         <div style="width: 20%;"/>

@@ -21,6 +21,8 @@ interface IWeek {
     end: Date;
 }
 
+type TSecond = number;
+type TMiliSecond = number;
 type TYear = number;
 type TMonth = number;
 type TDateStr = string; //yyyy-mm-dd

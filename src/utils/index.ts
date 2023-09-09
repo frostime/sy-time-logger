@@ -2,8 +2,8 @@
  * Copyright (c) 2023 by Yp Z (frostime). All Rights Reserved.
  * @Author       : Yp Z
  * @Date         : 2023-08-22 14:45:10
- * @FilePath     : /src/utils.ts
- * @LastEditTime : 2023-09-08 09:57:11
+ * @FilePath     : /src/utils/index.ts
+ * @LastEditTime : 2023-09-09 18:41:44
  * @Description  : 
  */
 import type { IEventBus } from "../types/global.js";
@@ -21,7 +21,7 @@ export const setI18n = (i18nObj: any) => {
  * @param time timestamp
  * @returns string, HH:mm:ss
  */
-export function time2str(time: number) {
+export function time2str(time: TSecond) {
     if (time < 0) {
         return "--:--:--";
     }
