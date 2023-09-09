@@ -2,7 +2,7 @@
   "name": "sy-time-logger",
   "author": "frostime",
   "url": "https://github.com/frostime/sy-time-logger",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "minAppVersion": "2.10.0",
   "backends": ["all"],
   "frontends": ["all"],
