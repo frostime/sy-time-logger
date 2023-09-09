@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 15:49:01
+ LastEditTime : 2023-09-09 16:27:35
  Description  : 
 -->
 <script lang="ts">
@@ -21,17 +21,35 @@
         });
         dateLogCnt.push(cnt);
     });
+
+    let showCompScopeMenu = false;
+
 </script>
 
 <main>
     <div class="banner">
         <div style="width: 20%;"/>
-        <div class="history-scope">
+        <div class="history-scope"
+            on:click={() => {
+                showCompScopeMenu = !showCompScopeMenu;
+            }}
+            on:keypress={() => {}}
+        >
             <div> 2023 </div>
             <div> 记录时间总计: 09:18 </div>
             <div class="triangle-button"/>
         </div>
         <div style="width: 20%;"/>
+        {#if showCompScopeMenu} 
+            <div class="scope-menu">
+                <div>&LeftTriangleBar;</div>
+                <div>日</div>
+                <div>周</div>
+                <div>月</div>
+                <div>年</div>
+                <div>&RightTriangleBar;</div>
+            </div>
+        {/if}
     </div>
     <section>
         {#if sessionHub.size() > 0}
@@ -70,6 +88,7 @@
         background-color: var(--b3-theme-primary);
         color: var(--b3-theme-on-primary);
         display: flex;
+        position: relative;
         .history-scope {
             flex: 1;
             text-align: center;
@@ -88,6 +107,24 @@
                 border-right: var(--triangle-size) solid var(--b3-theme-on-primary);
                 border-bottom: var(--triangle-size) solid var(--b3-theme-on-primary);
                 cursor: pointer;
+            }
+        }
+        .scope-menu {
+            z-index: 1;
+            position: absolute;
+            left: 3px;
+            right: 3px;
+            bottom: -36px;
+            height: 30px;
+            border: 2px solid var(--b3-theme-primary);
+            background-color: var(--b3-theme-background);
+            color: var(--b3-theme-on-background);
+            display: flex;
+            align-items: center;
+            &>div {
+                flex: 1;
+                text-align: center;
+                font-weight: bold;
             }
         }
     }
