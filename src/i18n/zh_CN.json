@@ -16,7 +16,8 @@
     },
     "ui_history": {
         "running": "进行中",
-        "cnt": "记录数量"
+        "cnt": "记录数量",
+        "sumOfElapsed": "总记录时间"
     },
     "ui_logging_active": {
         "memo": "备注",

@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 18:38:46
+ LastEditTime : 2023-09-09 18:46:59
  Description  : 
 -->
 <script lang="ts">
@@ -107,7 +107,7 @@
             on:keypress={() => {}}
         >
             <div> {scoop.value} </div>
-            <div> 记录时间总计: {time2str(sumOfElapsed / 1000)} </div>
+            <div> {i18n.ui_history.sumOfElapsed}: {time2str(sumOfElapsed / 1000)} </div>
             <div class="triangle-button"/>
         </div>
         <div style="width: 20%;"/>
