@@ -16,7 +16,8 @@
     },
     "ui_history": {
         "running": "In Progress",
-        "cnt": "Record Count"
+        "cnt": "Record Count",
+        "sumOfElapsed": "Sum of records"
     },
     "ui_logging_active": {
         "memo": "Memo",
