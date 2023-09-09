@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 17:37:04
+ LastEditTime : 2023-09-09 18:10:38
  Description  : 
 -->
 <script lang="ts">
@@ -12,7 +12,16 @@
     import { date2str, i18n } from "@/utils/index";
     import { getWeek } from "@/utils/time";
 
-    export let dateLogs: IDateLog[] = timeLogManager.allLogs();
+    type ScoopType = 'day' | 'week' | 'month' |'year';
+    const AllScoopType: ScoopType[] = ['day', 'week', 'month', 'year'];
+    let scoop = {
+        type: 'year' as ScoopType,
+        beg: new Date() as Date,
+        end: null as Date,
+        value: new Date().getFullYear() as any
+    }
+
+    let dateLogs: IDateLog[] = timeLogManager.allLogs();
     console.log(dateLogs);
     let dateLogCnt = [];
     dateLogs.forEach((dateLog) => {
@@ -23,40 +32,29 @@
         dateLogCnt.push(cnt);
     });
 
-    let showCompScopeMenu = false;
-
-    type ScoopType = 'day' | 'week' | 'month' |'year';
-    const AllScoopType: ScoopType[] = ['day', 'week', 'month', 'year'];
-    let currentScoop = {
-        type: 'year' as ScoopType,
-        beg: new Date() as Date,
-        end: null as Date,
-        value: new Date().getFullYear() as any
-    }
-
     const updateScoopValue = () => {
-        let beg = currentScoop.beg;
-        let stype = currentScoop.type;
+        let beg = scoop.beg;
+        let stype = scoop.type;
         if (stype === 'year') {
-            currentScoop.value = beg.getFullYear();
+            scoop.value = beg.getFullYear();
         } else if (stype === 'month') {
-            currentScoop.value = date2str(beg).slice(0, -3);
+            scoop.value = date2str(beg).slice(0, -3);
         } else if (stype === 'day') {
-            currentScoop.value = date2str(beg);
+            scoop.value = date2str(beg);
         } else if (stype === 'week') {
             let week = getWeek(beg);
-            currentScoop.beg = week.start;
-            currentScoop.end = week.end;
-            currentScoop.value = `${date2str(currentScoop.beg)} ~ ${date2str(currentScoop.end)}`;
+            scoop.beg = week.start;
+            scoop.end = week.end;
+            scoop.value = `${date2str(scoop.beg)} ~ ${date2str(scoop.end)}`;
         }
     }
     const changeScoopType = (stype: ScoopType) => {
-        currentScoop.type = stype;
+        scoop.type = stype;
         updateScoopValue();
     }
     const shiftScoopBeg = (delta: -1 | 1) => {
-        let beg = currentScoop.beg;
-        let stype = currentScoop.type;
+        let beg = scoop.beg;
+        let stype = scoop.type;
         if (stype === 'year') {
             beg.setFullYear(beg.getFullYear() + delta);
         } else if (stype === 'month') {
@@ -69,6 +67,8 @@
         updateScoopValue();
     }
 
+    let showCompScopeMenu = false;
+
 </script>
 
 <main>
@@ -80,7 +80,7 @@
             }}
             on:keypress={() => {}}
         >
-            <div> {currentScoop.value} </div>
+            <div> {scoop.value} </div>
             <div> 记录时间总计: 09:18 </div>
             <div class="triangle-button"/>
         </div>
@@ -90,7 +90,7 @@
                 <div on:click={() => shiftScoopBeg(-1)}>&lt;</div>
                 {#each AllScoopType as type}
                     <div data-type="{type}"
-                        class={type === currentScoop.type ? "current-type" : ""}
+                        class={type === scoop.type ? "current-type" : ""}
                         on:click={() => changeScoopType(type)}
                     >
                         {type}
