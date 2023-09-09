@@ -1,4 +1,4 @@
-import { time2datestr } from "@/utils";
+import { date2str, time2datestr } from "@/utils";
 import { Plugin } from "siyuan";
 
 /**从远往前排序 */
@@ -162,27 +162,63 @@ export class TimeLogManager {
         return dateLogs;
     }
 
-    queryLogs(startDate?: Date, endDate?: Date): IDateLog[] {
-        let start = startDate ? startDate.getTime() : new Date().setHours(0, 0, 0, 0);
-        let end = endDate ? endDate.getTime() : new Date().setHours(23, 59, 59, 999);
-        let startStr = time2datestr(start);
-        let endStr = time2datestr(end);
-        let allDate = Array.from(this.logHistory.keys());
-        let dateRange = allDate.filter(date => date >= startStr && date <= endStr);
-        dateRange = dateRange.sort((a, b) => a > b ? -1 : a < b ? 1 : 0);
-        let dateLogs: IDateLog[] = [];
-        dateRange.forEach(date => {
+    /**
+     * 给定 dates, 自动逆序排序并获取所有的历史记录
+     * @param dates 
+     * @returns 
+     */
+    getDateLogs(dates: TDateStr[]) {
+        dates = dates.sort((a, b) => a > b ? -1 : a < b ? 1 : 0); //逆序排序
+        return dates.map((date: TDateStr) => {
             let timeLogs = this.logHistory.get(date);
             timeLogs = timeLogs.sort(compareTimelog);
             timeLogs.forEach(timelog => {
-                timelog.procedure = timelog.procedure.sort((a, b) => a.beg > b.beg ? -1 : a.beg < b.beg ? 1 : 0);
+                timelog.procedure = timelog.procedure.sort(
+                    (a, b) => a.beg > b.beg ? -1 : a.beg < b.beg ? 1 : 0
+                );
             });
-            dateLogs.push({
+            return {
                 date: new Date(date),
-                timeLogs: timeLogs,
-            });
+                timeLogs: timeLogs
+            };
         });
-        return dateLogs;
+    }
+
+    queryYearLogs(year: TYear): IDateLog[] {
+        let monthIndex = this.index.get(year);
+        if (!monthIndex) {
+            return [];
+        }
+        let alldates: TDateStr[] = [];
+        monthIndex.forEach((set: Set<TDateStr>) => {
+            alldates = [...alldates, ...set];
+        });
+        return this.getDateLogs(alldates);
+    }
+
+    queryMonthLogs(year: TYear, month: TMonth): IDateLog[] {
+        let monthIndex = this.index.get(year);
+        if (!monthIndex) {
+            return [];
+        }
+        let dateIndex = monthIndex.get(month);
+        if (!dateIndex) {
+            return [];
+        }
+        return this.getDateLogs(Array.from(dateIndex));
+    }
+
+    queryDateLogs(date: Date) {
+        let datestr = date2str(date);
+        return this.getDateLogs([datestr]);
+    }
+
+    qeuryDurationLogs(start: Date, end: Date): IDateLog[] {
+        let allDate = Array.from(this.logHistory.keys());
+        let startStr = date2str(start);
+        let endStr = date2str(end);
+        let dates = allDate.filter(date => date >= startStr && date <= endStr);
+        return this.getDateLogs(dates);
     }
 }
 

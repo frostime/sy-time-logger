@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 18:10:38
+ LastEditTime : 2023-09-09 18:18:37
  Description  : 
 -->
 <script lang="ts">
@@ -21,8 +21,23 @@
         value: new Date().getFullYear() as any
     }
 
-    let dateLogs: IDateLog[] = timeLogManager.allLogs();
-    console.log(dateLogs);
+    export let dateLogs: IDateLog[] = [];
+
+    const updateQueryDateLogs = () => {
+        if (scoop.type === 'year') {
+            dateLogs = timeLogManager.queryYearLogs(scoop.beg.getFullYear());
+        } else if (scoop.type === 'month') {
+            let year = scoop.beg.getFullYear();
+            let month = scoop.beg.getMonth() + 1;
+            dateLogs = timeLogManager.queryMonthLogs(year, month);
+        } else if (scoop.type === 'day') {
+            dateLogs = timeLogManager.queryDateLogs(scoop.beg);
+        } else if (scoop.type === 'week') {
+            dateLogs = timeLogManager.qeuryDurationLogs(scoop.beg, scoop.end);
+        }
+    }
+    updateQueryDateLogs();
+
     let dateLogCnt = [];
     dateLogs.forEach((dateLog) => {
         let cnt = 0;
@@ -51,6 +66,7 @@
     const changeScoopType = (stype: ScoopType) => {
         scoop.type = stype;
         updateScoopValue();
+        updateQueryDateLogs();
     }
     const shiftScoopBeg = (delta: -1 | 1) => {
         let beg = scoop.beg;
@@ -65,6 +81,7 @@
             beg.setDate(beg.getDate() + delta * 7);
         }
         updateScoopValue();
+        updateQueryDateLogs();
     }
 
     let showCompScopeMenu = false;
