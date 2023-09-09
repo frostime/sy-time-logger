@@ -36,11 +36,11 @@ The "Groups" with numbered indicators in the upper right corner are the sub-acti
 
 ## View Past Records
 
-Click the "Records" button in the upper right corner to view all the saved activity records in the past.
+Click the "Records" button in the upper right corner to view the saved activity records in the past. Show all the records this year by default.
 
 ![image](assets/image-20230908222521-t1sp1oh.png)
 
-![image](assets/image-20230908222614-01dh316.png)
+![](asset/20230909190346.png)
 
 ## Configuration
 
