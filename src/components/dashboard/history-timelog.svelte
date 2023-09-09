@@ -3,13 +3,14 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 16:27:35
+ LastEditTime : 2023-09-09 17:19:42
  Description  : 
 -->
 <script lang="ts">
     import TimelogItem from "./timelog-item.svelte";
     import { timeLogManager, sessionHub } from "@/core";
-    import { date2str, i18n } from "@/utils";
+    import { date2str, i18n } from "@/utils/index";
+    import { getWeek } from "@/utils/time";
 
     export let dateLogs: IDateLog[] = timeLogManager.allLogs();
     console.log(dateLogs);
@@ -24,6 +25,31 @@
 
     let showCompScopeMenu = false;
 
+    type ScoopType = 'day' | 'week' | 'month' |'year';
+    const AllScoopType: ScoopType[] = ['day', 'week', 'month', 'year'];
+    let currentScoop = {
+        type: 'year' as ScoopType,
+        beg: new Date() as Date,
+        end: null as Date,
+        value: new Date().getFullYear() as any
+    }
+    const changeScoopType = (stype: ScoopType) => {
+        currentScoop.type = stype;
+        let oldDate = currentScoop.beg;
+        if (stype === 'year') {
+            currentScoop.value = oldDate.getFullYear();
+        } else if (stype === 'month') {
+            currentScoop.value = date2str(oldDate).slice(0, -3);
+        } else if (stype === 'day') {
+            currentScoop.value = date2str(oldDate);
+        } else if (stype === 'week') {
+            let week = getWeek(oldDate);
+            currentScoop.beg = week.start;
+            currentScoop.end = week.end;
+            currentScoop.value = `${date2str(currentScoop.beg)} ~ ${date2str(currentScoop.end)}`;
+        }
+    }
+
 </script>
 
 <main>
@@ -35,7 +61,7 @@
             }}
             on:keypress={() => {}}
         >
-            <div> 2023 </div>
+            <div> {currentScoop.value} </div>
             <div> 记录时间总计: 09:18 </div>
             <div class="triangle-button"/>
         </div>
@@ -43,10 +69,14 @@
         {#if showCompScopeMenu} 
             <div class="scope-menu">
                 <div>&LeftTriangleBar;</div>
-                <div>日</div>
-                <div>周</div>
-                <div>月</div>
-                <div>年</div>
+                {#each AllScoopType as type}
+                    <div data-type="{type}"
+                        class={type === currentScoop.type ? "current-type" : ""}
+                        on:click={() => changeScoopType(type)}
+                    >
+                        {type}
+                    </div>
+                {/each}
                 <div>&RightTriangleBar;</div>
             </div>
         {/if}
@@ -125,6 +155,10 @@
                 flex: 1;
                 text-align: center;
                 font-weight: bold;
+                cursor: pointer;
+            }
+            &>div.current-type {
+                color: var(--b3-theme-primary);
             }
         }
     }
