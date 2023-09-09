@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-25 14:54:10
  FilePath     : /src/components/dashboard/history-timelog.svelte
- LastEditTime : 2023-09-09 17:19:42
+ LastEditTime : 2023-09-09 17:34:20
  Description  : 
 -->
 <script lang="ts">
@@ -33,21 +33,40 @@
         end: null as Date,
         value: new Date().getFullYear() as any
     }
-    const changeScoopType = (stype: ScoopType) => {
-        currentScoop.type = stype;
-        let oldDate = currentScoop.beg;
+
+    const updateScoopValue = () => {
+        let beg = currentScoop.beg;
+        let stype = currentScoop.type;
         if (stype === 'year') {
-            currentScoop.value = oldDate.getFullYear();
+            currentScoop.value = beg.getFullYear();
         } else if (stype === 'month') {
-            currentScoop.value = date2str(oldDate).slice(0, -3);
+            currentScoop.value = date2str(beg).slice(0, -3);
         } else if (stype === 'day') {
-            currentScoop.value = date2str(oldDate);
+            currentScoop.value = date2str(beg);
         } else if (stype === 'week') {
-            let week = getWeek(oldDate);
+            let week = getWeek(beg);
             currentScoop.beg = week.start;
             currentScoop.end = week.end;
             currentScoop.value = `${date2str(currentScoop.beg)} ~ ${date2str(currentScoop.end)}`;
         }
+    }
+    const changeScoopType = (stype: ScoopType) => {
+        currentScoop.type = stype;
+        updateScoopValue();
+    }
+    const shiftScoopBeg = (delta: -1 | 1) => {
+        let beg = currentScoop.beg;
+        let stype = currentScoop.type;
+        if (stype === 'year') {
+            beg.setFullYear(beg.getFullYear() + delta);
+        } else if (stype === 'month') {
+            beg.setMonth(beg.getMonth() + delta);
+        } else if (stype === 'day') {
+            beg.setDate(beg.getDate() + delta);
+        } else if (stype === 'week') {
+            beg.setDate(beg.getDate() + delta * 7);
+        }
+        updateScoopValue();
     }
 
 </script>
@@ -68,7 +87,7 @@
         <div style="width: 20%;"/>
         {#if showCompScopeMenu} 
             <div class="scope-menu">
-                <div>&LeftTriangleBar;</div>
+                <div on:click={() => shiftScoopBeg(-1)}>&LeftTriangle;</div>
                 {#each AllScoopType as type}
                     <div data-type="{type}"
                         class={type === currentScoop.type ? "current-type" : ""}
@@ -77,7 +96,7 @@
                         {type}
                     </div>
                 {/each}
-                <div>&RightTriangleBar;</div>
+                <div on:click={() => shiftScoopBeg(1)}>&RightTriangle;</div>
             </div>
         {/if}
     </div>
