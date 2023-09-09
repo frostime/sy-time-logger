@@ -42,7 +42,7 @@ export function time2str(time: number) {
  * @param date , Date
  * @returns str, yyyy-MM-dd
  */
-export function date2str(date: Date) {
+export function date2str(date: Date): TDateStr {
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let day = date.getDate();

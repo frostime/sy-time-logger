@@ -19,12 +19,6 @@ const compareTimelog = (a: ITimeLog, b: ITimeLog) => {
 };
 
 const DATA_TIME_LOGGER = "time-log.json";
-type TYear = number;
-type TMonth = number;
-type TDateStr = string;
-interface ILogHistory {
-    [key: TDateStr]: ITimeLog[];
-}
 
 const INDEX_FILE = "log-index.json";
 const LOG_FILE = (year?: number) => {

@@ -3,12 +3,6 @@ export const thisYear = () => {
     return date.getFullYear();
 }
 
-export interface IWeek {
-    index: number;
-    start: Date;
-    end: Date;
-}
-
 export function getWeek(date: Date): IWeek {
     const currentDate = new Date(date.getTime()); // 创建一个新的日期对象，以避免修改原始日期对象
   
