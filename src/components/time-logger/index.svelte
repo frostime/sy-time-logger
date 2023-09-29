@@ -3,7 +3,7 @@
  Author       : Yp Z
  Date         : 2023-08-20 21:38:53
  FilePath     : /src/components/time-logger/index.svelte
- LastEditTime : 2023-09-08 11:56:40
+ LastEditTime : 2023-09-29 16:37:08
  Description  : 
 -->
 <script lang="ts">
@@ -21,14 +21,12 @@
     let currentActives: IActive[];
 
     const updateActives = () => {
-        console.groupCollapsed("sy-time-logger: updateActives")
-        console.log("Update Current Actives in group", currentGroup);
+        console.debug("Update Current Actives in group", currentGroup);
         currentActives = activeHub.getGroupActives(currentGroup);
         if (currentGroup !== "") {
             currentActives = [ActiveHub.SpecialActives.Back, ...currentActives];
         }
-        console.log(currentActives);
-        console.groupEnd();
+        console.debug(currentActives);
     };
     updateActives();
 
@@ -60,6 +58,17 @@
             currentGroup = active.id;
             updateActives();
         } else if (active.id === ActiveHub.SpecialActives.Back.id) {
+            currentGroup = ActiveHub.RootGroup;
+            updateActives();
+        } else {
+            let session = sessionHub.new(e.detail);
+            runningSession = [...runningSession, session];
+        }
+    }
+
+    const oncontextmenu = (e: CustomEvent<IActive>) => {
+        let active = e.detail;
+        if (active.id === ActiveHub.SpecialActives.Back.id) {
             currentGroup = ActiveHub.RootGroup;
             updateActives();
         } else {
@@ -114,5 +123,5 @@
         {/each}
     </section>
 
-    <AllActivesGrid on:click={onclick} actives={currentActives}/>
+    <AllActivesGrid on:click={onclick} on:contextmenu={oncontextmenu} actives={currentActives}/>
 </div>

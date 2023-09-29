@@ -2,8 +2,8 @@
  Copyright (c) 2023 by Yp Z (frostime). All Rights Reserved.
  Author       : Yp Z
  Date         : 2023-08-22 14:45:10
- FilePath     : /src/components/time-logger/all-actives.svelte
- LastEditTime : 2023-08-24 17:28:40
+ FilePath     : /src/components/time-logger/all-actives-grid.svelte
+ LastEditTime : 2023-09-29 16:39:14
  Description  : 
 -->
 <script lang="ts">
@@ -57,6 +57,9 @@
                 {active}
                 on:click={() => {
                     dispatch("click", active);
+                }}
+                on:contextmenu={() => {
+                    dispatch("contextmenu", active);
                 }}
             />
         </div>

@@ -35,6 +35,7 @@
     aria-label={active.title}
     style="width: {size.item}px; height: {height}px; {style}"
     on:click={onclick}
+    on:contextmenu={(e) => {dispatch("contextmenu"); e.stopPropagation();}}
     on:keypress={() => {}}
 >
     <div class="sub-actives" style={styleDisplayCnt}>{subActiveCnt}</div>

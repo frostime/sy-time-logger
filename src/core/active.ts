@@ -112,7 +112,7 @@ export class ActiveHub {
     }
 
     groupActiveCount(group: TActiveGroupID = "") {
-        console.log("groupActiveCount", group)
+        console.debug("groupActiveCount", group)
         return this.group2Actives.get(group)?.length ?? 0;
     }
 
@@ -225,7 +225,7 @@ export class ActiveHub {
                 newGroup.push(item);
             }
         }
-        console.log("ActiveHub: Update active", item);
+        console.debug("ActiveHub: Update active", item);
         eventBus.emit("on-active-updated", item);
 
         return true;

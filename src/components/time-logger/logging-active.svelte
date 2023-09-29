@@ -31,11 +31,11 @@
     // let session: TimeLogSession = sessionHub.new(active);
 
     onMount(() => {
-        console.log("Mount session", session);
+        console.debug("Mount session", session);
     });
 
     onDestroy(() => {
-        console.log("Destroy session", session);
+        console.debug("Destroy session", session);
     });
 
     let timer: string = time2str(session.elapsed / 1000);
