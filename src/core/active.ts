@@ -139,7 +139,7 @@ export class ActiveHub {
         eventBus.emit("on-active-updated");
     }
 
-    add(active: IActive | Active) {
+    add(active: IActive | Active, triggerUpdate = true) {
         console.log("Add active", active);
         if (this.id2Actives.has(active.id)) {
             console.error("Active already exists", active);
@@ -162,8 +162,12 @@ export class ActiveHub {
         if (item.isGroup) {
             this.group2Actives.set(item.id, []);
         }
-
-        eventBus.emit("on-active-updated");
+        if (triggerUpdate) {
+            //onload 新建的时候也会调用这个函数，这就意味着，如果数据没有来得及同步
+            //那么就会把 actives.json 文件的更新时间戳覆盖成当前时间戳，但是内容却仍然是老的
+            //这样就会导致云端同步过来的 actives.json 的更改丢失
+            eventBus.emit("on-active-updated");
+        }
         return true;
     }
 

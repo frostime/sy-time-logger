@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-09-08 12:16:37
+ * @LastEditTime : 2023-10-05 22:09:49
  * @Description  : 
  */
 import {
@@ -163,7 +163,7 @@ export default class PluginSample extends Plugin {
         let data_actives = await this.loadData(DATA_ACTIVES);
         this.data[DATA_ACTIVES] = data_actives || PredefinedActives;
         for (let active of this.data[DATA_ACTIVES]) {
-            activeHub.add(active);
+            activeHub.add(active, false);
         }
 
     }
