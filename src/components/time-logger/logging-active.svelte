@@ -1,12 +1,10 @@
 <script lang="ts">
     import { fly } from 'svelte/transition';
 
-    import { time2str } from "@/utils";
     import Active from "./active.svelte";
     import { TimeLogSession } from "@/core";
 
     import { eventBus, i18n } from "@/utils";
-    import { onDestroy, onMount } from "svelte";
 
     import { inputDialog } from "@/utils";
 
@@ -18,32 +16,9 @@
         active = session.active;
     };
 
-    //@ts-ignore
-    // const emoji = window.siyuan.emojis;
-    // let active: IActive = {
-    //     emoji: {
-    //         type: "custom",
-    //         code: emoji[0].items[0].unicode,
-    //     },
-    //     title: "大声阅读论文",
-    // };
+    let timer = session.timeLabel; //Writable
 
-    // let session: TimeLogSession = sessionHub.new(active);
-
-    onMount(() => {
-        console.debug("Mount session", session);
-    });
-
-    onDestroy(() => {
-        console.debug("Destroy session", session);
-    });
-
-    let timer: string = time2str(session.elapsed / 1000);
-    const update = (elapsed) => {
-        timer = time2str(elapsed / 1000);
-    };
-    session.addCallback(update);
-    session.updateActiveCallback = updateActive;
+    session.updateActiveCallback = updateActive; //TODO 重构去掉 callback
 
     type Status = "running" | "pause" | "stop";
     let status: Status = session.status;
@@ -94,7 +69,7 @@
             {active.title}
         </div>
         <div class="running-time">
-            {timer}
+            {$timer}
         </div>
         <div class="running-memo">
             {session.memo}

@@ -3,7 +3,7 @@
  * @Author       : Yp Z
  * @Date         : 2023-08-20 21:30:11
  * @FilePath     : /src/index.ts
- * @LastEditTime : 2023-10-05 22:09:49
+ * @LastEditTime : 2024-08-01 22:40:52
  * @Description  : 
  */
 import {
@@ -92,6 +92,7 @@ export default class PluginSample extends Plugin {
         eventBus.on("on-session-stop", (event: CustomEvent<TimeLogSession>) => {
             let session = event.detail;
             let timelog: ITimeLog = session.export();
+            console.log(timelog)
             if (timelog.elapsed == 0) {
                 return;
             }

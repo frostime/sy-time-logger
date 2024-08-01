@@ -120,6 +120,7 @@ export class TimeLogManager {
         let index = {};
         for (let year of this.index.keys()) {
             let monthIndex = this.index.get(year);
+            if (!monthIndex) continue;
             index[year] = monthIndex.keys();
         }
         await this.plugin.saveData(INDEX_FILE, index);

@@ -1,3 +1,7 @@
+import { type Writable, writable } from "svelte/store";
+
+import { time2str } from "@/utils";
+
 export class TimeLogSession implements ITimeLog {
     active: IActive;
     beg: TTimestamp;
@@ -15,6 +19,8 @@ export class TimeLogSession implements ITimeLog {
 
     callbacks = [];
 
+    timeLabel: Writable<string> = writable("");
+
     constructor(active: IActive) {
         this.active = active;
         this.procedure = [];
@@ -25,6 +31,11 @@ export class TimeLogSession implements ITimeLog {
         this.runningElapsed = 0;
         this.callbacks = [];
         this.status = "pause";
+        this.updateLabel(0);
+    }
+
+    private updateLabel(elapsed: number) {
+        this.timeLabel.set(time2str(elapsed / 1000));
     }
 
     export(): ITimeLog {
@@ -65,10 +76,9 @@ export class TimeLogSession implements ITimeLog {
             let elapsed = Date.now() - this.currentInterval.beg;
             this.currentInterval.elapsed = elapsed;
             this.runningElapsed = this.elapsed + elapsed;
-            // console.log(this.runningElapsed);
-            this.callbacks.forEach(callback => {
-                callback(this.runningElapsed);
-            });
+
+            //update writable
+            this.updateLabel(this.runningElapsed);
         }, 1000);
     }
 
