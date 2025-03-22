@@ -6,11 +6,10 @@
  * API 文档见 [API_zh_CN.md](https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md)
  */
 
-import { time } from "console";
 import { fetchSyncPost, IWebSocketData } from "siyuan";
 
 
-async function request(url: string, data: any) {
+export async function request(url: string, data: any) {
     let response: IWebSocketData = await fetchSyncPost(url, data);
     let res = response.code === 0 ? response.data : null;
     return res;
@@ -331,7 +330,7 @@ export async function removeFile(path: string) {
 
 
 
-export async function readDir(path: string): Promise<IResReadDir> {
+export async function readDir(path: string): Promise<IResReadDir[]> {
     let data = {
         path: path
     }

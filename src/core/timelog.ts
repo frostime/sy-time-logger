@@ -1,3 +1,4 @@
+import { readDir } from "@/api";
 import { date2str, time2datestr } from "@/utils";
 import { Plugin } from "siyuan";
 
@@ -37,18 +38,20 @@ export class TimeLogManager {
     async init(plugin: Plugin) {
         console.log("TimeLogManager.init()")
         this.plugin = plugin;
-        let thisYear = new Date().getFullYear();
-        // plugin.data[DATA_TIME_LOGGER] = this.history;
-        let index: {[key: TYear]: any} = (await plugin.loadData(INDEX_FILE)) || {};
-        for (let year in index) {
-            this.index.set(parseInt(year), undefined);
-        }
-
-        //默认只导入今年一年的记录
-        let record: ILogHistory = (await plugin.loadData(LOG_FILE(thisYear))) || {};
-        for (let datestr in record) {
-            this.logHistory.set(datestr, record[datestr]);
-            this.updateIndex(datestr);
+        // let thisYear = new Date().getFullYear();
+        // // plugin.data[DATA_TIME_LOGGER] = this.history;
+        // let index: {[key: TYear]: any} = (await plugin.loadData(INDEX_FILE)) || {};
+        let files = await readDir(`/data/storage/petal/${plugin.name}/logs`);
+        const years = files.filter(file => file.name.match(/^\d{4}-history\.json$/)).map(file => {
+            return parseInt(file.name.split("-")[0]);
+        })
+        for (const year of years) {
+            this.index.set(year, undefined);
+            let record: ILogHistory = (await plugin.loadData(LOG_FILE(year))) || {};
+            for (let datestr in record) {
+                this.logHistory.set(datestr, record[datestr]);
+                this.updateIndex(datestr);
+            }
         }
     }
 
@@ -117,12 +120,13 @@ export class TimeLogManager {
 
     async save() {
         //不需要保存完整的 index, 只需要保存的 year 一级, 用来确认存在哪些日志就行了
-        let index = {};
-        for (let year of this.index.keys()) {
-            let monthIndex = this.index.get(year);
-            index[year] = monthIndex.keys();
-        }
-        await this.plugin.saveData(INDEX_FILE, index);
+        // let index = {};
+        // for (let year of this.index.keys()) {
+        //     let monthIndex = this.index.get(year);
+        //     index[year] = monthIndex.keys();
+        // }
+
+        await this.plugin.saveData(INDEX_FILE, this.index);
         for (let year of this.index.keys()) {
             let months = this.index.get(year);
             if (months !== undefined) {

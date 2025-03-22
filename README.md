@@ -4,6 +4,17 @@ The basic feature of the plugin is to help you record your current activity. Ope
 
 ![image](assets/image-20230908221241-4d01rmv.png)
 
+> **Important Announcement**  
+>  
+> This plugin will enter a transition period leading to the termination of its maintenance. The current update (v1.2.5) primarily focuses on the following aspects:  
+> 1. **Critical Bug Fixes** - Resolving stability issues that affect core functionalities  
+> 2. **Compatibility Maintenance** - Ensuring basic operational capabilities in the current environment  
+>  
+> **User Notice**:  
+> - New users are advised not to install this plugin  
+> - Existing users are recommended to start planning their migration strategy  
+> - The plugin will be removed from the plugin marketplace at a future date
+
 ### Activity Recording
 
 * Activity Recording: When we click on an activity, a timer will appear to record the current ongoing activity. You can open multiple activities at once.
