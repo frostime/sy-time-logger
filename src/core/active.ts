@@ -1,6 +1,7 @@
 import { eventBus } from "@/utils";
+import { Writable, writable } from "svelte/store";
 
-class Active implements IActive {
+export class Active implements IActive {
 
     id: string;
     emoji: {
@@ -11,6 +12,12 @@ class Active implements IActive {
     isGroup: boolean;
     groupId: string;
 
+    titleLabel: Writable<string>;
+    emojiLabel: Writable<{
+        type: string;
+        code: string;
+    }>;
+
     constructor(data: IActive) {
         let timedelta = Date.now() - 1672531200000;
         this.id = data.id ?? `#${timedelta.toString(36).toUpperCase()}`;
@@ -18,6 +25,9 @@ class Active implements IActive {
         this.title = data.title;
         this.isGroup = data.isGroup ?? false;
         this.groupId = data.groupId ?? "";
+
+        this.titleLabel = writable(this.title);
+        this.emojiLabel = writable(this.emoji);
     }
 
     dump(): IActive {
@@ -122,7 +132,7 @@ export class ActiveHub {
         if (!actives) {
             return [];
         }
-        return actives.map(active => active.dump());
+        return actives;
     }
 
     setGroupActives(actives: IActive[] | Active[], group?: TActiveGroupID) {
